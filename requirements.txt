@@ -1,0 +1,5 @@
+numexpr==2.8.1
+numpy==1.21.4
+pyTelegramBotAPI==4.2.2
+telebot==0.0.4
+
