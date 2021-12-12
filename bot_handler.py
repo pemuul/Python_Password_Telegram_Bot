@@ -39,7 +39,7 @@ class Handler:
 		text_message = message.json['text']
 		my_print(f'{self.get_name(message)} : {text_message}')
 			
-		text_answer = self.convert.convert_from_text(text_message)
+		#text_answer = self.convert.convert_from_text(text_message)
 		text_answer = 'pass'
 
 		my_print(f'|bot|: {text_answer}')
