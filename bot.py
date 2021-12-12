@@ -11,6 +11,10 @@ bot = telebot.TeleBot(bot_setup.TOKEN)
 def send_welcome(message):
 	handler.send_welcome(message)
 
+@bot.message_handler(commands=['get_log'])
+def get_log(message):
+	bot.send_message(message.chat.id, str(Log_heandler().get_tooday_log()))
+
 @bot.message_handler(content_types=['text'])
 def get_text_messages2(message):
 	handler.get_text_messages(message)
