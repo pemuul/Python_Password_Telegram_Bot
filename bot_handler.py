@@ -1,4 +1,5 @@
-#pip3 install PyTelegramBotAPI
+#pip install PyTelegramBotAPI
+
 #import decimal
 import numexpr as ne
 from telebot import types
@@ -38,7 +39,7 @@ class Handler:
 		text_message = message.json['text']
 		my_print(f'{self.get_name(message)} : {text_message}')
 			
-		#text_answer = self.convert.convert_from_text(text_message)
+		text_answer = self.convert.convert_from_text(text_message)
 		text_answer = 'pass'
 
 		my_print(f'|bot|: {text_answer}')
@@ -74,6 +75,4 @@ class Handler:
 		self.bot.send_message(admin_id, last_message)
 
 if __name__ == '__main__':
-	a = ''
-	ne.evaluate('5555**55555')
-	my_print(str())
+	pass
