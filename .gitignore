@@ -1,2 +1,3 @@
 *.db
 /log/*.txt
+bot_setup.py
