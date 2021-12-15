@@ -30,7 +30,6 @@ def get_text_messages2(message):
 def callback_inline(call):
 	handler.button_answer(call)
 	
-
 while True:
 	try:
 		handler = Handler(bot)
