@@ -1,4 +1,5 @@
 import json
+import datetime
 
 from sqllite_main import Database
 from loging import Log_heandler
@@ -14,7 +15,7 @@ class Table(object):
 		DB_LOCATION = "tester_db.sqlite"
 		self.db = Database(DB_LOCATION)
 		self.table_name = table_name_P
-		self.shem_table = self.shem_by_table_name(table_name_P)
+		self.shem_table = self.shem_json[table_name_P]['always_fild']
 		#print(self.shem_table)
 		self.table_key = self.shem_json[table_name_P]['key']
 		#print(self.table_key)
@@ -25,16 +26,15 @@ class Table(object):
 	def create_password_table(self):
 		self.db.create_table(self.table_name, self.shem_table)
 
-	def shem_by_table_name(self, table_name_P):
-		try:	
-			return [key for key in self.shem_json[table_name_P]['shem'].keys()]
-		except:
-			return []
-
 	@log.save_error_log_bool_dec
 	def insert(self, *data_P):
 		try:
-			self.db.insert_data(self.table_name, self.shem_table, data_P)
+			data = data_P
+			if "Create date" in self.shem_table:
+				now = datetime.datetime.now().strftime("%d_%m_%Y %H:%M:%S")
+				data = self.add_by_index([s for s in data_P], now, self.shem_table.index("Create date"))
+				print(data)
+			self.db.insert_data(self.table_name, self.shem_table, data)
 			return True
 		except Exception as e:
 			Log_heandler().save_log(f'insert table {self.table_name} {data_P} | {e}', 'ERROR')
@@ -55,15 +55,22 @@ class Table(object):
 	def get_all(self):
 		return self.db.get_table(self.table_name)
 
+	def add_by_index(self, list_P, add_item_P, index_P):
+		new = list_P[:index_P]
+		new.append(add_item_P)
+		return new + list_P[index_P:]
+
 if __name__ == '__main__':
 	Table_password = Table('users_password')
 
-	#Table_password.insert(1087624586, 'qwerty', 'qwrty')
+	Table_password.insert(1087624586, 'qwertyd', 'qwrty')
 	#print(Table_password.get('123', 'asd'))
 
-	print(Table_password.get(1087624586, 'qwerty'))
+	#print(Table_password.get(1087624586, 'qwerty'))
 
-	print(Table_password.get_all())
+	#print(Table_password.get_all())
+
+	print(Table_password.add_by_index([1, 2, 3, 4, 5, 6, 7, 8], 'd', 4))
 
 	#print(Table_password.shem_by_table_name('users_password'))
 	#print(Log_heandler().get_tooday_log())

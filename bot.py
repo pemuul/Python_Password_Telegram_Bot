@@ -4,12 +4,19 @@ import datetime
 import bot_setup
 from bot_handler import Handler
 from loging import Log_heandler
+from sqllite_main import Database
 
 bot = telebot.TeleBot(bot_setup.TOKEN)
 
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
 	handler.send_welcome(message)
+
+@bot.message_handler(commands=['add_colum'])
+def get_log(message):
+	if message.chat.id == bot_setup.ADMIN_ID:
+		Database().add_colum('users_password', 'Create date', 'text')
+		bot.send_message(message.chat.id, 'Ok')
 
 @bot.message_handler(commands=['get_log'])
 def get_log(message):

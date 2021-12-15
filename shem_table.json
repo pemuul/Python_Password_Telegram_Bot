@@ -1,10 +1,12 @@
 {
 	"users_password" : {
-							"shem" : {
-										"User_ID" : "integer", 
-										"Description" : "text",
-										"Password" : " text"
-									},
-							"key" : ["User_ID", "Description"]
-						}
+		"shem" : {
+			"User_ID" : "integer", 
+			"Description" : "text",
+			"Password" : "text",
+			"Create date" : "text"
+		},
+		"always_fild" : ["User_ID", "Description", "Password", "Create date"],
+		"key" : ["User_ID", "Description"]
+	}
 }

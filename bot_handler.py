@@ -108,10 +108,13 @@ class Handler:
 				#self.user_insert_password[message.chat.id]['message_id'] = message.message_id
 				self.user_insert_password[message.chat.id]['password'] = text_message
 			else:
-				self.Table_password.insert(message.chat.id, self.user_insert_password[message.chat.id]['description'], cryptocode.encrypt(self.user_insert_password[message.chat.id]['password'], text_message))
+				if self.Table_password.insert(message.chat.id, self.user_insert_password[message.chat.id]['description'], cryptocode.encrypt(self.user_insert_password[message.chat.id]['password'], text_message)):
+					text_answer = 'Готово'
+				else:
+					text_answer = 'Что-то пощло не так, попробуйте ещё раз.'
 				#self.bot.delete_message(message.from_user.id,self.user_insert_password[message.chat.id]['message_id'])
 				del self.user_insert_password[message.chat.id]
-				text_answer = 'Готово'
+				
 
 			self.bot.delete_message(message.from_user.id,message.message_id)
 			self.bot.send_message(message.from_user.id, text_answer)

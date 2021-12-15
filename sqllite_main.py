@@ -28,11 +28,13 @@ class Database:
 		self.cur.execute(f'''SELECT name FROM sqlite_master 
 								WHERE name='{table_name_P}' ''')
 		
-		if self.cur.fetchall() != [] and not hard_create_P:
-			return()
+		#if self.cur.fetchall() != [] and not hard_create_P:
+		#	return()
 
-		row_line = ", ".join(row_list_P)
-		key_list = ", ".join(key_list_P)
+		row_line = '", "'.join(row_list_P)
+		row_line = f'"{row_line}"'
+		key_list = '", "'.join(key_list_P)
+		key_list = f'"{key_list}"'
 		self.cur.execute(f'''CREATE TABLE IF NOT EXISTS {table_name_P}({row_line}, primary key ({key_list}))''')
 
 	def commit(self):
@@ -44,8 +46,10 @@ class Database:
 		return self.cur.fetchall()
 
 	def insert_data(self, table_name_P, line_name_P, data_line_P):
-		line_name = ", ".join([str(i) for i in line_name_P])
+		line_name = '", "'.join([str(i) for i in line_name_P])
+		line_name = f'"{line_name}"'
 		data_line = "', '".join([str(i) for i in data_line_P])
+
 		#print(f"INSERT INTO {table_name_P} ({line_name}) VALUES('{data_line}')")
 		print(f"INSERT INTO {table_name_P} ({line_name}) VALUES('{data_line}')")
 		self.cur.execute(f"INSERT INTO {table_name_P} ({line_name}) VALUES('{data_line}')")
@@ -73,6 +77,9 @@ class Database:
 		else:
 			return []
 
+	def add_colum(self, table_name_P, field_name_P, field_type_P):
+		return self.select(f'alter table {table_name_P} add "{field_name_P}" {field_type_P}')
+
 if __name__ == '__main__':
 	db = Database('tester_db.sqlite')
 	#db.create_table('users_password', ["User_ID integer", 
@@ -83,7 +90,7 @@ if __name__ == '__main__':
 	#db.commit()
 	#print(db.get_data('users_password'))
 	#db.get_data('users_password', ['1', '2', '3'], ['4', '5', '6'])
-	print(db.select("SELECT * FROM users_password WHERE User_ID = '123' and Description = 'фwfкdк'"))
+	#print(db.select('alter table users_password add "Create date"'))
 	#print([i for i, b in map(32, [134,34,3])])
 	#for i, b in map(1, ['134','34','3']):
 	#	print(i, b)
