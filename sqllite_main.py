@@ -2,8 +2,6 @@ import sqlite3
 
 class Database:
 	"""sqlite3 database class that holds testers jobs"""
-	DB_LOCATION = "tester_db.sqlite"
-
 	def __init__(self, database_name_P):
 		"""Initialize db class variables"""
 		self.connection = sqlite3.connect(database_name_P, check_same_thread=False)

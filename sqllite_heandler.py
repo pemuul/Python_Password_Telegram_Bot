@@ -4,6 +4,8 @@ import datetime
 from sqllite_main import Database
 from loging import Log_heandler
 
+DB_LOCATION = "db_sqlite.sqlite"
+
 class Table(object):
 	# схема таблиц хранится в файле shem_table.json
 	with open("shem_table.json", "r") as read_file:
@@ -12,7 +14,6 @@ class Table(object):
 	log = Log_heandler()
 
 	def __init__(self, table_name_P):
-		DB_LOCATION = "tester_db.sqlite"
 		self.db = Database(DB_LOCATION)
 		self.table_name = table_name_P
 		self.shem_table = self.shem_json[table_name_P]['always_fild']

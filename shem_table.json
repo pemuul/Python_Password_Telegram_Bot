@@ -8,5 +8,16 @@
 		},
 		"always_fild" : ["User_ID", "Description", "Password", "Create date"],
 		"key" : ["User_ID", "Description"]
+	},
+	"users" : {
+		"shem" : {
+			"User_ID" : "integer",
+			"First name" : "text",
+			"Last name" : "text",
+			"Role" : "text",
+			"Create date" : "text"
+		},
+		"always_fild" : ["User_ID", "First name", "Last name", "Role", "Create date"],
+		"key" : ["User_ID"]
 	}
 }

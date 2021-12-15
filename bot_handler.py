@@ -22,7 +22,10 @@ class Handler:
 		self.last_message = None
 		#self.convert = Convert_base()
 		self.sql_seandler = SQL_seandler()
+
 		self.Table_password = Table('users_password')
+		self.Users = Table('users')
+
 		with open("shem_button.json", "r", encoding='utf-8') as read_file:
 			self.shem_json = json.load(read_file)
 
@@ -89,6 +92,8 @@ class Handler:
 		else:
 			text_answer = text_message
 		'''
+		if self.Users.get(message.chat.id) == []:
+			print(self.Users.insert(message.chat.id, self.get_name, None, 'Nother'))
 		text_answer = text_message
 
 		''''''''''''''''''''''''''''''''''''''
