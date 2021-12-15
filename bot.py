@@ -19,14 +19,15 @@ def get_log(message):
 def get_text_messages2(message):
 	handler.get_text_messages(message)
 
+@bot.callback_query_handler(func=lambda call: True)
+def callback_inline(call):
+	handler.button_answer(call)
+	
+
 while True:
 	try:
 		handler = Handler(bot)
 		handler.run_bot()
+		Log_heandler().save_log('Бот был оставновлен')
 	except Exception as e:
-		try:
-			now = datetime.datetime.now().strftime("%d_%m_%Y %H:%M:%S")
-			Log_heandler().save_log(f'{now} | {e}')
-			#print(f'{now} | {e}')
-		except:
-			print('ERROR try log')
+		Log_heandler().save_log(e)

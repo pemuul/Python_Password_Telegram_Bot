@@ -1,0 +1,10 @@
+{
+	"users_password" : {
+							"shem" : {
+										"User_ID" : "integer", 
+										"Description" : "text",
+										"Password" : " text"
+									},
+							"key" : ["User_ID", "Description"]
+						}
+}

@@ -1,0 +1,66 @@
+{
+	"menu" : {
+		"row1" : {
+			"Получить пороль" : {
+						"User_ID" : "integer", 
+						"Description" : "text",
+						"Password" : " text"
+					}
+		},
+		"row2" : {
+			"Добавить пороль" : ["User_ID", "Description"]
+		},
+		"row3" : {
+			"Удалить пороль" : ""
+		}
+	},
+	"qwery" : {
+		"row1" : {
+			"Получить пороль" : {
+						"Return_value" : "Get"
+					}
+		},
+		"row2" : {
+			"Добавить пороль" : {
+				"Return_value" : "Insert"
+			}
+		},
+		"row3" : {
+			"Удалить пороль" : {
+				"Return_value" : "Delete"
+			}
+		}
+	},
+	"test" : {
+		"row1" : {
+			"button1" : {
+						"User_ID" : "integer", 
+						"Description" : "text",
+						"Password" : " text"
+					},
+			"button2" : ["User_ID", "Description"],
+			"button3" : "",
+			"button4" : "",
+			"button5" : "",
+			"button6" : "",
+			"button7" : ""
+		},
+		"row2" : {
+			"nada" : {
+						"User_ID" : "integer", 
+						"Description" : "text",
+						"Password" : " text"
+					},
+			"nada2" : ["User_ID", "Description"],
+			"nada3" : "",
+			"nada4" : "",
+			"nada5" : "",
+			"nada6" : "",
+			"nada7" : ""
+		},
+		"row3" : {
+			"gg" : ""
+		}
+		
+	}
+}
