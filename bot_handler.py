@@ -31,6 +31,7 @@ class Handler:
 
 		self.user_insert_password = {}
 		self.user_get_password = {}
+		self.message_to_delete = {}
 
 	def send_welcome(self, message):
 		my_print(message.json['text'])
@@ -39,11 +40,13 @@ class Handler:
 	def button_answer(self, call_P):
 		params = call_P.data.split(',')
 		return_val = 'pass'
+		delete_new_message = False
 		if params[0] == 'Get':
 			get_table = self.Table_password.get(call_P.message.chat.id, params[1])
 			if get_table != []:
 				self.user_get_password[call_P.message.chat.id] = get_table[2]
 				return_val = 'Введите ключ'
+				delete_new_message = True
 			else:
 				return_val = 'Такой записи нет'
 		elif params[0] == 'Insert':
@@ -58,7 +61,10 @@ class Handler:
 		else:
 			pass
 
-		self.bot.edit_message_text(f"{return_val}", call_P.message.chat.id,call_P.message.message_id)
+		message_send = self.bot.edit_message_text(f"{return_val}", call_P.message.chat.id,call_P.message.message_id)
+		print(message_send.message_id)
+		if delete_new_message:
+			self.add_message_to_delete(call_P.message.chat.id, message_send.message_id)
 
 	def get_text_messages(self, message):
 		self.last_message = message
@@ -86,20 +92,25 @@ class Handler:
 			print(self.Users.insert(message.chat.id, self.get_name, None, 'Nother'))
 		text_answer = text_message
 
+		self.delete_message_for_user(message.chat.id)
+
 		''''''''''''''''''''''''''''''''''''''
 		if message.chat.id in [i for i in self.user_get_password.keys()]:
 			print(self.user_get_password)
 			text_answer = cryptocode.decrypt(self.user_get_password[message.chat.id], text_message)
 			del self.user_get_password[message.chat.id]
 			self.bot.delete_message(message.from_user.id,message.message_id)
-			self.bot.send_message(message.from_user.id, text_answer)
-		
+			message_send = self.bot.send_message(message.from_user.id, text_answer)
+			self.add_message_to_delete(message.from_user.id, message_send.message_id)
+
 		elif message.chat.id in [i for i in self.user_insert_password.keys()]:
+			delete_new_message = False
 			if self.user_insert_password[message.chat.id]['password'] == '':
 				text_answer = 'Теперь введи ключ'
 				self.bot.delete_message(message.from_user.id,self.user_insert_password[message.chat.id]['message_id'])
 				#self.user_insert_password[message.chat.id]['message_id'] = message.message_id
 				self.user_insert_password[message.chat.id]['password'] = text_message
+				delete_new_message = True
 			else:
 				if self.Table_password.insert(message.chat.id, self.user_insert_password[message.chat.id]['description'], cryptocode.encrypt(self.user_insert_password[message.chat.id]['password'], text_message)):
 					text_answer = 'Готово'
@@ -108,13 +119,29 @@ class Handler:
 				#self.bot.delete_message(message.from_user.id,self.user_insert_password[message.chat.id]['message_id'])
 				del self.user_insert_password[message.chat.id]
 				
-
 			self.bot.delete_message(message.from_user.id,message.message_id)
-			self.bot.send_message(message.from_user.id, text_answer)
+			message_send = self.bot.send_message(message.from_user.id, text_answer)
+			if delete_new_message:
+				self.add_message_to_delete(message.from_user.id, message_send.message_id)
 		else:
 			my_print(f'{self.get_name(message)} : {text_message}')
 			my_print(f'|bot|: {text_answer}')
-			self.bot.send_message(message.from_user.id, text_answer, reply_markup=self.create_inline_keyboard('qwery', text_message))
+			message_send = self.bot.send_message(message.from_user.id, text_answer, reply_markup=self.create_inline_keyboard('qwery', text_message))
+			#self.add_message_to_delete(message.from_user.id, message_send.message_id)
+
+	def add_message_to_delete(self, user_id_P, message_id_P):
+		print(self.message_to_delete)
+		if self.message_to_delete.get(user_id_P) == None:
+			self.message_to_delete[user_id_P] = []	
+		self.message_to_delete[user_id_P].append(message_id_P)
+		print(self.message_to_delete)
+
+	def delete_message_for_user(self, user_id_P):
+		if self.message_to_delete.get(user_id_P) != None:
+			for message_id in self.message_to_delete[user_id_P]:
+				print(message_id)
+				self.bot.delete_message(user_id_P,message_id)
+			del self.message_to_delete[user_id_P]
 
 	def create_markup(self, shem_button_name_P):
 		shem_menu_button = self.shem_json[shem_button_name_P]
@@ -157,4 +184,5 @@ class Handler:
 		self.bot.send_message(admin_id, last_message)
 
 if __name__ == '__main__':
-	pass
+	h = Handler(bot = '')
+	h.add_message_to_delete(12445, 234243)
