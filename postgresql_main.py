@@ -1,12 +1,16 @@
 import sqlite3
 import psycopg2
+import os
 
 class Database:
 	"""sqlite3 database class that holds testers jobs"""
 	def __init__(self, database_name_P):
 		"""Initialize db class variables"""
-		#self.connection = sqlite3.connect(database_name_P, check_same_thread=False)
-		self.connection = self.dbConn()
+		if os.getcwd() == '/apt':
+			self.connection = self.dbConn()
+		else:
+			self.connection = sqlite3.connect(database_name_P, check_same_thread=False)
+		
 		#self.table_name = table_name_P
 		self.cur = self.connection.cursor()
 

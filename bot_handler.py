@@ -59,7 +59,7 @@ class Handler:
 			pass
 
 		message_send = self.bot.edit_message_text(f"{return_val}", call_P.message.chat.id,call_P.message.message_id)
-		print(message_send.message_id)
+		#print(message_send.message_id)
 		if delete_new_message:
 			self.add_message_to_delete(call_P.message.chat.id, message_send.message_id)
 
@@ -127,16 +127,16 @@ class Handler:
 			#self.add_message_to_delete(message.from_user.id, message_send.message_id)
 
 	def add_message_to_delete(self, user_id_P, message_id_P):
-		print(self.message_to_delete)
+		#print(self.message_to_delete)
 		if self.message_to_delete.get(user_id_P) == None:
 			self.message_to_delete[user_id_P] = []	
 		self.message_to_delete[user_id_P].append(message_id_P)
-		print(self.message_to_delete)
+		#print(self.message_to_delete)
 
 	def delete_message_for_user(self, user_id_P):
 		if self.message_to_delete.get(user_id_P) != None:
 			for message_id in self.message_to_delete[user_id_P]:
-				print(message_id)
+				#print(message_id)
 				self.bot.delete_message(user_id_P,message_id)
 			del self.message_to_delete[user_id_P]
 
