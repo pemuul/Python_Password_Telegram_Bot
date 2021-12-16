@@ -4,5 +4,5 @@ pyTelegramBotAPI==4.2.2
 telebot==0.0.4
 cryptocode==0.1 
 pycryptodomex==3.12.0
-psycopg2=2.9.2
+psycopg2==2.9.2
 
