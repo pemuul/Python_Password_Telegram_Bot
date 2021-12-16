@@ -1,5 +1,6 @@
 import telebot
 import datetime
+import os
 
 import bot_setup
 from bot_handler import Handler
@@ -17,6 +18,12 @@ def get_log(message):
 	if message.chat.id == bot_setup.ADMIN_ID:
 		Database().add_colum('users_password', 'Create date', 'text')
 		bot.send_message(message.chat.id, 'Ok')
+
+@bot.message_handler(commands=['test'])
+def get_log(message):
+	if message.chat.id == bot_setup.ADMIN_ID:
+		bot.send_message(message.chat.id, os.getcwd())
+
 
 @bot.message_handler(commands=['get_log'])
 def get_log(message):
