@@ -64,7 +64,7 @@ def get_text_messages2(message):
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
 	handler.button_answer(call)
-	
+	 
 while True:
 	try:
 		handler = Handler(bot)
