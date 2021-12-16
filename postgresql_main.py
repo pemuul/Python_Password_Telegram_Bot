@@ -6,7 +6,7 @@ class Database:
 	"""sqlite3 database class that holds testers jobs"""
 	def __init__(self, database_name_P):
 		"""Initialize db class variables"""
-		if os.getcwd() == '/apt':
+		if os.getcwd() == '/app':
 			self.connection = self.dbConn()
 		else:
 			self.connection = sqlite3.connect(database_name_P, check_same_thread=False)
