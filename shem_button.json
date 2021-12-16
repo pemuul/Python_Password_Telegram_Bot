@@ -17,8 +17,8 @@
 	"qwery" : {
 		"row1" : {
 			"Получить пороль" : {
-						"Return_value" : "Get"
-					}
+				"Return_value" : "Get"
+			}
 		},
 		"row2" : {
 			"Добавить пороль" : {
@@ -28,6 +28,11 @@
 		"row3" : {
 			"Удалить пороль" : {
 				"Return_value" : "Delete"
+			}
+		},
+		"row4" : {
+			"Пропустить" : {
+				"Return_value" : "pass"
 			}
 		}
 	},

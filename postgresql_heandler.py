@@ -43,6 +43,14 @@ class Table(object):
 			Log_heandler().save_log(f'insert table {self.table_name} {data_P} | {e}', 'ERROR')
 			return False
 
+	def delete(self, *data_P):
+		try:
+			self.db.delete_data(self.table_name, self.table_key, data_P)
+			return True
+		except Exception as e:
+			Log_heandler().save_log(f'delete table {self.table_name} {data_P} | {e}', 'ERROR')
+			return False
+
 	@log.save_error_log_list_dec
 	def get(self, *key_P):
 		#try:

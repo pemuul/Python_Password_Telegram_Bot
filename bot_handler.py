@@ -35,8 +35,9 @@ class Handler:
 		self.bot.reply_to(message, f'Я буду хранить твои пороли. Даже мой создатель не сможет узнать твой пороль, так как он закдирован, и ключ нигде не хранится.')
 
 	def button_answer(self, call_P):
-		params = call_P.data.split(',')
-		return_val = 'pass'
+		params = call_P.data.split(', ')
+		print(params)
+		return_val = ''
 		delete_new_message = False
 		if params[0] == 'Get':
 			get_table = self.Table_password.get(call_P.message.chat.id, params[1])
@@ -54,10 +55,14 @@ class Handler:
 			else:
 				return_val = 'Такое название занято, придумайте другое'
 		elif params[0] == 'Delete':
-			pass
+			if self.Table_password.delete(call_P.message.chat.id, params[1]):
+				return_val = 'Пороль удалён'
 		else:
 			pass
 
+		if return_val == '':
+			self.bot.delete_message(call_P.message.chat.id,call_P.message.message_id)
+			return()
 		message_send = self.bot.edit_message_text(f"{return_val}", call_P.message.chat.id,call_P.message.message_id)
 		#print(message_send.message_id)
 		if delete_new_message:

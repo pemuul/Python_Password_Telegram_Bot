@@ -33,41 +33,27 @@ class Database:
 		self.create_table()
 		self.cur.executemany('REPLACE INTO jobs VALUES(?, ?, ?, ?)', many_new_data)
 
-	def create_table(self, table_name_P, shem_table_name_P, hard_create_P=False):
+	def delete_data(self, table_name_P, shem_table_name_P, data_P):
+		#key_data = ", ".join([str(i) for i in data])
+		key_list = shem_table_name_P
+		print('ok2')
+		#key = ", ".join([str(i) for i in key_list])
+		data_P = [str(i) for i in data_P]
+		print(data_P)
+		filter_set = ''#[[f'{str(data[i])}, {str(key_list[i])}'] for i in range(len(key_list))]
+		for i in range(len(key_list)):
+			filter_set += f'''"{str(key_list[i])}" = '{str(data_P[i])}' and '''
+		filter_set = filter_set[:-4]
+		print(f'DELETE FROM {table_name_P} WHERE {filter_set}')
+		self.cur.execute(f'DELETE FROM {table_name_P} WHERE {filter_set}')
+
+
+	def create_table(self, table_name_P, shem_table_name_P):
 		shem = shem_table_name_P['shem']
 		row_list = [i for i in shem.keys()]
-
-
-		#row_line = '", "'.join(row_list_P)
 		row_line = ''.join([f'"{row}" {shem[row]}, ' for row in row_list])[:-2]
-		#print(row_line)
-		#row_line = f'"{row_line}"'
-		#key_list = '", "'.join(key_list_P)
-		#key_list = f'"{key_list}"'
 		key_list = ''.join([f'"{i}", ' for i in shem_table_name_P['key']])[:-2]
-		#print('CREATE TABLE IF NOT EXISTS users_password("User_ID" INTEGER, "Description" TEXT, "Password" TEXT, "Create date" TEXT, PRIMARY KEY ("User_ID", "Description"))')
-		#print(f"CREATE TABLE IF NOT EXISTS {table_name_P}({row_line}, primary key ({key_list}))")
 		self.cur.execute(f"CREATE TABLE IF NOT EXISTS {table_name_P}({row_line}, primary key ({key_list}))")
-		
-		'''
-		CREATE TABLE accounts (
-			user_id serial PRIMARY KEY,
-			username VARCHAR ( 50 ) UNIQUE NOT NULL,
-			password VARCHAR ( 50 ) NOT NULL,
-			email VARCHAR ( 255 ) UNIQUE NOT NULL,
-			created_on TIMESTAMP NOT NULL,
-				last_login TIMESTAMP
-		);
-		'''
-		'''
-		self.cur.execute(f"SELECT name FROM sqlite_master 
-								WHERE name='{table_name_P}'")
-		row_line = '", "'.join(row_list_P)
-		row_line = f'"{row_line}"'
-		key_list = '", "'.join(key_list_P)
-		key_list = f'"{key_list}"'
-		self.cur.execute(f"CREATE TABLE IF NOT EXISTS {table_name_P}({row_line}, primary key ({key_list}))")
-		'''
 
 	def commit(self):
 		"""commit changes to database"""
@@ -88,8 +74,8 @@ class Database:
 		self.commit()
 
 	def get_data(self, table_name_P, key_data_P, key_P):
-		key_data = ", ".join([str(i) for i in key_data_P])
-		key = ", ".join([str(i) for i in key_P])
+		#key_data = ", ".join([str(i) for i in key_data_P])
+		#key = ", ".join([str(i) for i in key_P])
 		filter_set = ''#[[f'{str(key_data_P[i])}, {str(key_P[i])}'] for i in range(len(key_P))]
 		for i in range(len(key_P)):
 			filter_set += f'''"{str(key_P[i])}" = '{str(key_data_P[i])}' and '''
