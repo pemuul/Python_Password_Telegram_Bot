@@ -4,7 +4,7 @@ import datetime
 from sqllite_main import Database
 from loging import Log_heandler
 
-DB_LOCATION = "db_sqlite.sqlite"
+DB_LOCATION = "../db_sqlite.sqlite"
 
 class Table(object):
 	# схема таблиц хранится в файле shem_table.json
