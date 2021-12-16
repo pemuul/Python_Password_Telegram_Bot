@@ -20,7 +20,42 @@ def get_log(message):
 
 @bot.message_handler(commands=['get_log'])
 def get_log(message):
-	bot.send_message(message.chat.id, str(Log_heandler().get_tooday_log()))
+	if message.chat.id == bot_setup.ADMIN_ID:
+		text = message.text.split(' ')
+		if len(text) < 2:
+			log_name = Log_heandler().get_log_name_file()
+		else:
+			log_name = Log_heandler().get_log_name_file(now_P = text[1])
+		try:
+			with open(log_name, 'r') as log_file:
+				bot.send_document(message.chat.id, log_file)
+		except:
+			bot.send_message(message.chat.id, 'Такого файла нет!')
+
+@bot.message_handler(commands=['get_db'])
+def get_db(message):
+	if message.chat.id == bot_setup.ADMIN_ID:
+		with open('db_sqlite.sqlite', 'r') as log_file:
+			bot.send_document(message.chat.id, log_file)
+
+@bot.message_handler(commands=['get_file'])
+def get_file(message):
+	if message.chat.id == bot_setup.ADMIN_ID:
+		text = message.text.split(' ')
+		if len(text) < 2:
+			bot.send_message(message.chat.id, 'Введите имя файла')
+			return ()
+		try:
+			with open(text[1], 'r') as log_file:
+				bot.send_document(message.chat.id, log_file)
+		except:
+			bot.send_message(message.chat.id, 'Ошибка')
+
+@bot.message_handler(commands=['admin'])
+def admin(message):
+	if message.chat.id == bot_setup.ADMIN_ID:	
+		bot.send_message(message.from_user.id, 'Доступ получен', reply_markup=handler.create_markup('admin'))
+
 
 @bot.message_handler(content_types=['text'])
 def get_text_messages2(message):

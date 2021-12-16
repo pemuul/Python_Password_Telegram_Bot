@@ -1,6 +1,13 @@
 import datetime
 
 class Log_heandler:
+	def get_log_name_file(self, now_P = ''):
+		if now_P == '':
+			now = datetime.datetime.now().strftime("%d_%m_%Y %H:%M:%S")
+		else:
+			now = now_P
+		return f'log/log_{now[:10]}.txt'
+
 	def save_log(self, text_P, type_P=''):
 		try:
 			now = datetime.datetime.now().strftime("%d_%m_%Y %H:%M:%S")
@@ -8,7 +15,7 @@ class Log_heandler:
 			if type_P != '':
 				str_log = f'{type_P} | {str_log}'
 			print(str_log)
-			with open(f'log/log_{now[:10]}.txt', 'a+') as file_log:
+			with open(self.get_log_name_file(now), 'a+') as file_log:
 				file_log.writelines(str_log + '\n')
 			return True
 		except:

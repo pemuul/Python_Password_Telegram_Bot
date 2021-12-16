@@ -31,35 +31,15 @@
 			}
 		}
 	},
-	"test" : {
+	"admin" : {
 		"row1" : {
-			"button1" : {
-						"User_ID" : "integer", 
-						"Description" : "text",
-						"Password" : " text"
-					},
-			"button2" : ["User_ID", "Description"],
-			"button3" : "",
-			"button4" : "",
-			"button5" : "",
-			"button6" : "",
-			"button7" : ""
+			"/get_log" : ""
 		},
 		"row2" : {
-			"nada" : {
-						"User_ID" : "integer", 
-						"Description" : "text",
-						"Password" : " text"
-					},
-			"nada2" : ["User_ID", "Description"],
-			"nada3" : "",
-			"nada4" : "",
-			"nada5" : "",
-			"nada6" : "",
-			"nada7" : ""
+			"/get_db" : ""
 		},
 		"row3" : {
-			"gg" : ""
+			"/get_file" : ""
 		}
 		
 	}

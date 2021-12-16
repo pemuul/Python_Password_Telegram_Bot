@@ -34,7 +34,7 @@ class Handler:
 
 	def send_welcome(self, message):
 		my_print(message.json['text'])
-		#elf.bot.reply_to(message, f'Я бот, который переоводит одно числов другую систему счисления. \n Пример: 5 from 8 to  4\n Это из 5 в восьмеричной системы в четверичную. {message.from_user.first_name}')
+		self.bot.reply_to(message, f'Я буду хранить твои пороли. Даже мой создатель не сможет узнать твой пороль, так как он закдирован, и ключ нигде не хранится.')
 
 	def button_answer(self, call_P):
 		params = call_P.data.split(',')
@@ -61,44 +61,32 @@ class Handler:
 		self.bot.edit_message_text(f"{return_val}", call_P.message.chat.id,call_P.message.message_id)
 
 	def get_text_messages(self, message):
-		#if self.last_message != None:
-		#	self.bot.delete_message(self.last_message.from_user.id,self.last_message.message_id)
-		#	self.last_message = None
 		self.last_message = message
 		self.answer(message)
 
+	def admin(self, text_message_P, message):
+		if message.from_user.id == admin_id:	
+			if text_message_P == 'admin':
+				self.bot.send_message(message.from_user.id, 'Доступ получен', reply_markup=self.create_markup('admin'))
+				return True
+			else:	
+				return False
+		else:
+			return False
+		
+
 	def answer(self, message):
-		# выключатель для админа
-		if message.text.lower() == '0':
-			if message.from_user.id == admin_id:
-				#pass
-				self.bot.stop_polling()
-			else:
-				self.bot.send_message(message.from_user.id, 'Ну ты пытался', reply_markup=self.create_markup(2, ['5from 6 to 8', '-A1from16', '3123 from 4 to8', '0']))
 		text_message = message.json['text']
-		my_print(f'{self.get_name(message)} : {text_message}')
+		if self.admin(text_message, message):
+			return()
 
 		''''''''''''''''''''''''''''''''''''''
-		#text_answer = self.convert.convert_from_text(text_message)
-		#print(self.Table_password.insert(admin_id, text_message, 'qwrty'))
-		#text_answer = str(self.Table_password.get(admin_id, text_message))
-		'''
-		if text_message == 'Получить пороль':
-			text_answer = str(self.Table_password.get(admin_id, text_message))
-		elif text_message == 'Добавить пороль': 
-			text_answer = self.Table_password.insert(admin_id, text_message, 'qwrty')
-		elif text_message == 'Удалить пороль':
-			text_answer = 'pass'
-		else:
-			text_answer = text_message
-		'''
+
 		if self.Users.get(message.chat.id) == []:
 			print(self.Users.insert(message.chat.id, self.get_name, None, 'Nother'))
 		text_answer = text_message
 
 		''''''''''''''''''''''''''''''''''''''
-
-		print(self.user_insert_password)
 		if message.chat.id in [i for i in self.user_get_password.keys()]:
 			print(self.user_get_password)
 			text_answer = cryptocode.decrypt(self.user_get_password[message.chat.id], text_message)
@@ -124,25 +112,18 @@ class Handler:
 			self.bot.delete_message(message.from_user.id,message.message_id)
 			self.bot.send_message(message.from_user.id, text_answer)
 		else:
+			my_print(f'{self.get_name(message)} : {text_message}')
 			my_print(f'|bot|: {text_answer}')
 			self.bot.send_message(message.from_user.id, text_answer, reply_markup=self.create_inline_keyboard('qwery', text_message))
 
 	def create_markup(self, shem_button_name_P):
 		shem_menu_button = self.shem_json[shem_button_name_P]
 		row_list = [str(i) for i in shem_menu_button.keys()]
-		markup = types.ReplyKeyboardMarkup()
+		markup = types.ReplyKeyboardMarkup(True, True)
 		for row_name in row_list:
-			#print(shem_menu_button[row_name])
 			row_button = [str(i) for i in shem_menu_button[row_name].keys()]
 			btn = [types.KeyboardButton(b) for b in row_button]
 			markup.row(*btn)
-
-		'''
-		markup = types.InlineKeyboardMarkup()
-		kb1 = types.InlineKeyboardButton(text="1-ая кнопка", callback_data="text1")
-		kb2 = types.InlineKeyboardButton(text="2-ая кнопка", callback_data="text2")
-		markup.add(kb1, kb2)
-		'''
 		return markup
 
 	def create_inline_keyboard(self, shem_button_name_P, text_message_P):
