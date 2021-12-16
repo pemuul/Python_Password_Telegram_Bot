@@ -2,4 +2,4 @@
 #git update-index --no-assume-unchanged file.py
 *.db
 /log/*.txt
-*.sqlite
+#*.sqlite
