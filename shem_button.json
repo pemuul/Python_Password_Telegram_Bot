@@ -47,5 +47,12 @@
 			"/get_file" : ""
 		}
 		
+	},
+	"delete_button" : {
+		"row1" : {
+			"Убрать" : {
+				"Return_value" : "Delete_button"
+			}
+		}
 	}
 }

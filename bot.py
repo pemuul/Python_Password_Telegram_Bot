@@ -20,9 +20,10 @@ def get_log(message):
 		bot.send_message(message.chat.id, 'Ok')
 
 @bot.message_handler(commands=['test'])
-def get_log(message):
+def test(message):
 	if message.chat.id == bot_setup.ADMIN_ID:
-		bot.send_message(message.chat.id, os.getcwd())
+		print(bot.pin_chat_message(message.chat.id, message.message_id))
+		#print(bot.pin_chat_message(message.chat.id, message.message_id))
 
 
 @bot.message_handler(commands=['get_log'])

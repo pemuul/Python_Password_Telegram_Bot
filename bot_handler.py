@@ -57,6 +57,9 @@ class Handler:
 		elif params[0] == 'Delete':
 			if self.Table_password.delete(call_P.message.chat.id, params[1]):
 				return_val = 'Пороль удалён'
+		elif params[0] == 'Delete_button':
+			#self.bot.delete_message(call_P.message.chat.id,call_P.message.message_id)
+			self.delete_message(call_P)
 		else:
 			pass
 
@@ -102,7 +105,7 @@ class Handler:
 			text_answer = cryptocode.decrypt(self.user_get_password[message.chat.id], text_message)
 			del self.user_get_password[message.chat.id]
 			self.bot.delete_message(message.from_user.id,message.message_id)
-			message_send = self.bot.send_message(message.from_user.id, text_answer)
+			message_send = self.bot.send_message(message.from_user.id, text_answer, reply_markup=self.create_inline_keyboard('delete_button', text_message))
 			self.add_message_to_delete(message.from_user.id, message_send.message_id)
 
 		elif message.chat.id in [i for i in self.user_insert_password.keys()]:
@@ -137,6 +140,12 @@ class Handler:
 			self.message_to_delete[user_id_P] = []	
 		self.message_to_delete[user_id_P].append(message_id_P)
 		#print(self.message_to_delete)
+
+	def delete_message(self, call_P):
+		if self.message_to_delete.get(call_P.message.chat.id) != None:
+			del self.message_to_delete[call_P.message.chat.id][self.message_to_delete[call_P.message.chat.id].index(call_P.message.message_id)]
+
+		#self.bot.delete_message(call_P.message.chat.id,call_P.message.message_id)
 
 	def delete_message_for_user(self, user_id_P):
 		if self.message_to_delete.get(user_id_P) != None:
