@@ -20,7 +20,6 @@ class Handler:
 	def __init__(self, bot):
 		self.bot = bot
 		self.last_message = None
-		#self.convert = Convert_base()
 		self.sql_seandler = SQL_seandler()
 
 		self.Table_password = Table('users_password')

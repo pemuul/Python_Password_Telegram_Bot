@@ -35,7 +35,7 @@ def get_log(message):
 @bot.message_handler(commands=['get_db'])
 def get_db(message):
 	if message.chat.id == bot_setup.ADMIN_ID:
-		with open('db_sqlite.sqlite', 'r') as log_file:
+		with open('db_sqlite.sqlite', 'r', encoding='utf-8') as log_file:
 			bot.send_document(message.chat.id, log_file)
 
 @bot.message_handler(commands=['get_file'])
