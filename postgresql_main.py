@@ -5,9 +5,16 @@ class Database:
 	"""sqlite3 database class that holds testers jobs"""
 	def __init__(self, database_name_P):
 		"""Initialize db class variables"""
-		self.connection = sqlite3.connect(database_name_P, check_same_thread=False)
+		#self.connection = sqlite3.connect(database_name_P, check_same_thread=False)
+		self.connection = self.dbConn()
 		#self.table_name = table_name_P
 		self.cur = self.connection.cursor()
+
+	def dbConn(self):
+		conn = psycopg2.connect(dbname='dac7beqlceqgjn', user='kvwornaibpygwp',
+								password='82571b29e5d80ae6c567e343386315e13f84c921544fac2e3a9b10224f24496c',
+								host='ec2-35-169-37-64.compute-1.amazonaws.com')
+		return conn
 
 	def close(self):
 		"""close sqlite3 connection"""
@@ -22,19 +29,41 @@ class Database:
 		self.create_table()
 		self.cur.executemany('REPLACE INTO jobs VALUES(?, ?, ?, ?)', many_new_data)
 
-	def create_table(self, table_name_P, row_list_P, key_list_P, hard_create_P=False):
-		"""create a database table if it does not exist already"""
-		self.cur.execute(f'''SELECT name FROM sqlite_master 
-								WHERE name='{table_name_P}' ''')
-		
-		#if self.cur.fetchall() != [] and not hard_create_P:
-		#	return()
+	def create_table(self, table_name_P, shem_table_name_P, hard_create_P=False):
+		shem = shem_table_name_P['shem']
+		row_list = [i for i in shem.keys()]
 
+
+		#row_line = '", "'.join(row_list_P)
+		row_line = ''.join([f'"{row}" {shem[row]}, ' for row in row_list])[:-2]
+		#print(row_line)
+		#row_line = f'"{row_line}"'
+		#key_list = '", "'.join(key_list_P)
+		#key_list = f'"{key_list}"'
+		key_list = ''.join([f'"{i}", ' for i in shem_table_name_P['key']])[:-2]
+		#print('CREATE TABLE IF NOT EXISTS users_password("User_ID" INTEGER, "Description" TEXT, "Password" TEXT, "Create date" TEXT, PRIMARY KEY ("User_ID", "Description"))')
+		#print(f"CREATE TABLE IF NOT EXISTS {table_name_P}({row_line}, primary key ({key_list}))")
+		self.cur.execute(f"CREATE TABLE IF NOT EXISTS {table_name_P}({row_line}, primary key ({key_list}))")
+		
+		'''
+		CREATE TABLE accounts (
+			user_id serial PRIMARY KEY,
+			username VARCHAR ( 50 ) UNIQUE NOT NULL,
+			password VARCHAR ( 50 ) NOT NULL,
+			email VARCHAR ( 255 ) UNIQUE NOT NULL,
+			created_on TIMESTAMP NOT NULL,
+				last_login TIMESTAMP
+		);
+		'''
+		'''
+		self.cur.execute(f"SELECT name FROM sqlite_master 
+								WHERE name='{table_name_P}'")
 		row_line = '", "'.join(row_list_P)
 		row_line = f'"{row_line}"'
 		key_list = '", "'.join(key_list_P)
 		key_list = f'"{key_list}"'
-		self.cur.execute(f'''CREATE TABLE IF NOT EXISTS {table_name_P}({row_line}, primary key ({key_list}))''')
+		self.cur.execute(f"CREATE TABLE IF NOT EXISTS {table_name_P}({row_line}, primary key ({key_list}))")
+		'''
 
 	def commit(self):
 		"""commit changes to database"""
@@ -59,16 +88,18 @@ class Database:
 		key = ", ".join([str(i) for i in key_P])
 		filter_set = ''#[[f'{str(key_data_P[i])}, {str(key_P[i])}'] for i in range(len(key_P))]
 		for i in range(len(key_P)):
-			filter_set += f"{str(key_P[i])} = '{str(key_data_P[i])}' and "
+			filter_set += f'''"{str(key_P[i])}" = '{str(key_data_P[i])}' and '''
 		filter_set = filter_set[:-4]
 
 		print(f'SELECT * FROM {table_name_P} WHERE {filter_set}')
 		self.cur.execute(f'SELECT * FROM {table_name_P} WHERE {filter_set}')
 		return self.fetchall_to_list(self.cur.fetchall())
 
-	def select(self, text_P):
+	def select(self, text_P, returned_P=True):
 		self.cur.execute(text_P)
-		return self.cur.fetchall()
+		self.commit()
+		if returned_P:
+			return self.cur.fetchall()
 
 	def fetchall_to_list(self, fetchall_P):
 		if len(fetchall_P) > 0:
@@ -81,7 +112,7 @@ class Database:
 
 if __name__ == '__main__':
 	db = Database('tester_db.sqlite')
-	#db.dbConn()
+	db.dbConn()
 	#db.create_table('users_password', ["User_ID integer", 
 	#					"Description text",
 	#					"Password text", 'primary key  (User_ID, Description)'])

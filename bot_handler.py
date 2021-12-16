@@ -5,9 +5,8 @@ import json
 import cryptocode
 
 from telebot import types
-from sql_seandler import SQL_seandler
-from sqllite_heandler import Table
-
+#from sqllite_heandler import Table
+from postgresql_heandler import Table
 
 import bot_setup
 
@@ -20,7 +19,6 @@ class Handler:
 	def __init__(self, bot):
 		self.bot = bot
 		self.last_message = None
-		self.sql_seandler = SQL_seandler()
 
 		self.Table_password = Table('users_password')
 		self.Users = Table('users')

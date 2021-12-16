@@ -1,7 +1,8 @@
 import json
 import datetime
 
-from sqllite_main import Database
+#from sqllite_main import Database
+from postgresql_main import Database
 from loging import Log_heandler
 
 DB_LOCATION = "db_sqlite.sqlite"
@@ -21,7 +22,8 @@ class Table(object):
 		self.table_key = self.shem_json[table_name_P]['key']
 		#print(self.table_key)
 
-		self.db.create_table(table_name_P, self.shem_table, self.table_key)
+		#self.db.create_table(table_name_P, self.shem_table, self.table_key)
+		self.db.create_table(table_name_P, self.shem_json[table_name_P])
 		#print(self.table_key)
 
 	def create_password_table(self):
@@ -61,15 +63,22 @@ class Table(object):
 		new.append(add_item_P)
 		return new + list_P[index_P:]
 
+	def select(self, *args, **kwards):
+		self.db.select(*args, **kwards)
+
 if __name__ == '__main__':
 	Table_password = Table('users_password')
 
 	Table_password.insert(1087624586, 'qwertyd', 'qwrty')
 	#print(Table_password.get('123', 'asd'))
 
-	#print(Table_password.get(1087624586, 'qwerty'))
+	print(Table_password.get(1087624586, 'qwertyd'))
 
 	#print(Table_password.get_all())
+
+	print(Table_password.select('''SELECT * FROM users_password WHERE "User_ID" = '1087624586' and "Description" = 'qwertyd' ''', True))
+
+	#print(Table_password.select('SELECT * FROM "users_password"'))
 
 	#print(Table_password.add_by_index([1, 2, 3, 4, 5, 6, 7, 8], 'd', 4))
 
