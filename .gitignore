@@ -1,5 +1,5 @@
-#git update-index --assume-unchanged file.py
+#git update-index --assume-unchanged file.py [bot_setup.py, db_sqlite.sqlite]
 #git update-index --no-assume-unchanged file.py
 *.db
 /log/*.txt
-#*.sqlite
+*.sqlite
