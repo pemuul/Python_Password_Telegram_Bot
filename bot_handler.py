@@ -52,7 +52,7 @@ f'''Я буду хранить твои пороли.
 
 	def button_answer(self, call_P):
 		params = call_P.data.split(', ')
-		print(params)
+		#print(params)
 		return_val = ''
 		delete_new_message = False
 		if params[0] == 'Get':
@@ -111,6 +111,7 @@ f'''Я буду хранить твои пороли.
 
 		if self.Users.get(message.chat.id) == []:
 			print(self.Users.insert(message.chat.id, self.get_name, None, 'Nother'))
+			self.bot.send_message(admin_id, f'{str(self.get_name(message))} - теперь с нами')
 		text_answer = text_message
 
 		self.delete_message_for_user(message.chat.id)
