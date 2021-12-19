@@ -74,15 +74,18 @@ class Database:
 		self.commit()
 
 	def get_data(self, table_name_P, key_data_P, key_P):
-		#key_data = ", ".join([str(i) for i in key_data_P])
-		#key = ", ".join([str(i) for i in key_P])
-		filter_set = ''#[[f'{str(key_data_P[i])}, {str(key_P[i])}'] for i in range(len(key_P))]
-		for i in range(len(key_P)):
-			filter_set += f'''"{str(key_P[i])}" = '{str(key_data_P[i])}' and '''
-		filter_set = filter_set[:-4]
+		filter_set = self.select_data_to_key(key_data_P, key_P)
 
 		print(f'SELECT * FROM {table_name_P} WHERE {filter_set}')
 		self.cur.execute(f'SELECT * FROM {table_name_P} WHERE {filter_set}')
+		return self.fetchall_to_list(self.cur.fetchall())[0]
+
+	def find_set(self, table_name_P, key_data_P, key_P):
+		filter_set = self.select_data_to_key(key_data_P, key_P, 'LIKE', '%', '%')
+
+		text = f'''SELECT * FROM {table_name_P} WHERE {filter_set}'''
+		print(text)
+		self.cur.execute(text)
 		return self.fetchall_to_list(self.cur.fetchall())
 
 	def select(self, text_P, returned_P=True):
@@ -91,27 +94,38 @@ class Database:
 		if returned_P:
 			return self.cur.fetchall()
 
+	def select_data_to_key(self, key_data_P, key_P, primery_P='=', previus_P='',end_P=''):
+		filter_set = ''
+		for i in range(len(key_P)):
+			filter_set += f'''"{str(key_P[i])}" {primery_P} '{previus_P}{str(key_data_P[i])}{end_P}' and '''
+		filter_set = filter_set[:-4]
+		return filter_set
+
+
 	def fetchall_to_list(self, fetchall_P):
 		if len(fetchall_P) > 0:
-			return [fetch for fetch in fetchall_P[0]]
+			return [[f for f in fetch] for fetch in fetchall_P]
+			#return [fetch for fetch in fetchall_P[0]]
 		else:
-			return []
+			return [[]]
+			#return []
 
 	def add_colum(self, table_name_P, field_name_P, field_type_P):
 		return self.select(f'alter table {table_name_P} add "{field_name_P}" {field_type_P}')
 
 if __name__ == '__main__':
-	db = Database('tester_db.sqlite')
-	db.dbConn()
+	db = Database('db_sqlite.sqlite')
+	#db.dbConn()
 	#db.create_table('users_password', ["User_ID integer", 
 	#					"Description text",
 	#					"Password text", 'primary key  (User_ID, Description)'])
 	
 	#db.insert_data('users_password', ["User_ID", "Description", "Password"], ['13', '14124', '1234'])
+	print(db.find_set('users_password', ['1087624586', '123'], ["User_ID", "Description"]))
 	#db.commit()
 	#print(db.get_data('users_password'))
 	#db.get_data('users_password', ['1', '2', '3'], ['4', '5', '6'])
-	#print(db.select('alter table users_password add "Create date"'))
+	#print(db.select('''SELECT * FROM users_password WHERE "User_ID" LIKE '%1087624586%' and "Description" LIKE '%123%' '''))
 	#print([i for i, b in map(32, [134,34,3])])
 	#for i, b in map(1, ['134','34','3']):
 	#	print(i, b)

@@ -31,17 +31,17 @@ class Table(object):
 
 	@log.save_error_log_bool_dec
 	def insert(self, *data_P):
-		try:
-			data = data_P
-			if "Create date" in self.shem_table:
-				now = datetime.datetime.now().strftime("%d_%m_%Y %H:%M:%S")
-				data = self.add_by_index([s for s in data_P], now, self.shem_table.index("Create date"))
-				print(data)
-			self.db.insert_data(self.table_name, self.shem_table, data)
-			return True
-		except Exception as e:
-			Log_heandler().save_log(f'insert table {self.table_name} {data_P} | {e}', 'ERROR')
-			return False
+		#try:
+		data = data_P
+		if "Create date" in self.shem_table:
+			now = datetime.datetime.now().strftime("%d_%m_%Y %H:%M:%S")
+			data = self.add_by_index([s for s in data_P], now, self.shem_table.index("Create date"))
+			print(data)
+		self.db.insert_data(self.table_name, self.shem_table, data)
+		return True
+		#except Exception as e:
+		#	Log_heandler().save_log(f'insert table {self.table_name} {data_P} | {e}', 'ERROR')
+		#	return False
 
 	def delete(self, *data_P):
 		try:
@@ -58,6 +58,16 @@ class Table(object):
 		#except Exception as e:
 		#	Log_heandler().save_log(f'get table {self.table_name} {key_P} | {e}', 'ERROR')
 		#	return None
+
+	@log.save_error_log_list_dec
+	def find_set(self, *key_P):
+		#try:
+		return self.db.find_set(self.table_name, key_P, self.table_key)
+		#except Exception as e:
+		#	Log_heandler().save_log(f'get table {self.table_name} {key_P} | {e}', 'ERROR')
+		#	return None
+
+
 
 	@log.save_error_log_list_dec
 	def get_log(self, *key_P):

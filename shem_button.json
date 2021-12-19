@@ -31,6 +31,11 @@
 			}
 		},
 		"row4" : {
+			"Показать похожие" : {
+				"Return_value" : "FindSet"
+			} 
+		},
+		"row5" : {
 			"Пропустить" : {
 				"Return_value" : "pass"
 			}
@@ -52,6 +57,50 @@
 		"row1" : {
 			"Убрать" : {
 				"Return_value" : "Delete_button"
+			}
+		}
+	},
+	"set_name" : {
+		"row1" : {
+			"%1" : ""
+		}		
+	},
+	"qwery_get" : {
+		"row1" : {
+			"Получить пороль" : {
+				"Return_value" : "Get"
+			}
+		},
+		"row2" : {
+			"Удалить пороль" : {
+				"Return_value" : "Delete"
+			}
+		},
+		"row4" : {
+			"Показать похожие" : {
+				"Return_value" : "FindSet"
+			} 
+		},
+		"row5" : {
+			"Пропустить" : {
+				"Return_value" : "pass"
+			}
+		}
+	},
+	"qwery_find" : {
+		"row1" : {
+			"Добавить пороль" : {
+				"Return_value" : "Insert"
+			}
+		},
+		"row2" : {
+			"Показать похожие" : {
+				"Return_value" : "FindSet"
+			} 
+		},
+		"row3" : {
+			"Пропустить" : {
+				"Return_value" : "pass"
 			}
 		}
 	}

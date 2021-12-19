@@ -55,6 +55,7 @@ f'''Я буду хранить твои пороли.
 		#print(params)
 		return_val = ''
 		delete_new_message = False
+		message_send = None
 		if params[0] == 'Get':
 			get_table = self.Table_password.get(call_P.message.chat.id, params[1])
 			if get_table != []:
@@ -76,13 +77,24 @@ f'''Я буду хранить твои пороли.
 		elif params[0] == 'Delete_button':
 			#self.bot.delete_message(call_P.message.chat.id,call_P.message.message_id)
 			self.delete_message(call_P)
+		elif params[0] == 'FindSet':
+			get_table = self.Table_password.find_set(call_P.message.chat.id, params[1])
+			if get_table != [[]]:
+				print(get_table)
+				return_val = [[g[1]] for g in get_table]
+				
+				message_send = self.bot.send_message(call_P.message.chat.id, f'Схожие с : {params[1]}', reply_markup=self.create_markup2('set_name', return_val))
+				delete_new_message = True
+			else:
+				return_val = 'Таких записей нет'
 		else:
 			pass
 
 		if return_val == '':
 			self.bot.delete_message(call_P.message.chat.id,call_P.message.message_id)
 			return()
-		message_send = self.bot.edit_message_text(f"{return_val}", call_P.message.chat.id,call_P.message.message_id)
+		if message_send == None:
+			message_send = self.bot.edit_message_text(f"{return_val}", call_P.message.chat.id,call_P.message.message_id)
 		#print(message_send.message_id)
 		if delete_new_message:
 			self.add_message_to_delete(call_P.message.chat.id, message_send.message_id)
@@ -146,9 +158,13 @@ f'''Я буду хранить твои пороли.
 			if delete_new_message:
 				self.add_message_to_delete(message.from_user.id, message_send.message_id)
 		else:
+			if self.Table_password.get(message.from_user.id, text_message):
+				reply_markup = self.create_inline_keyboard('qwery_get', text_message)
+			else:
+				reply_markup = self.create_inline_keyboard('qwery_find', text_message)
 			my_print(f'{self.get_name(message)} : {text_message}')
 			my_print(f'|bot|: {text_answer}')
-			message_send = self.bot.send_message(message.from_user.id, text_answer, reply_markup=self.create_inline_keyboard('qwery', text_message))
+			message_send = self.bot.send_message(message.from_user.id, text_answer, reply_markup=reply_markup)
 			#self.add_message_to_delete(message.from_user.id, message_send.message_id)
 
 	def add_message_to_delete(self, user_id_P, message_id_P):
@@ -181,6 +197,21 @@ f'''Я буду хранить твои пороли.
 			markup.row(*btn)
 		return markup
 
+	def create_markup2(self, shem_button_name_P, data_to_button_P=[[]]):
+		shem_menu_button = self.shem_json[shem_button_name_P]
+		row_list = [str(i) for i in shem_menu_button.keys()]
+		markup = types.ReplyKeyboardMarkup(True, True)
+		row_button = [str(i) for i in shem_menu_button[row_list[0]].keys()]
+		for data in data_to_button_P:
+			btn = []
+			for i in range(len(row_button)):
+				#if '%' in row_button[i]:
+				b = row_button[i].replace(f'%{i + 1}', data[i])
+				btn.append(types.KeyboardButton(b))
+				print(b)
+			markup.row(*btn)
+		return markup
+
 	def create_inline_keyboard(self, shem_button_name_P, text_message_P):
 		shem_menu_button = self.shem_json[shem_button_name_P]
 		row_list = [str(i) for i in shem_menu_button.keys()]
@@ -196,6 +227,8 @@ f'''Я буду хранить твои пороли.
 		first_name = ''
 		try:
 			last_name = message.from_user.last_name
+			if last_name == None:
+				last_name = ''
 		except:
 			pass
 		try:
@@ -212,40 +245,7 @@ f'''Я буду хранить твои пороли.
 		self.bot.send_message(admin_id, last_message)
 
 if __name__ == '__main__':
-	#h = Handler(bot = '')
+	h = Handler(bot = '')
 	#h.add_message_to_delete(12445, 234243)
-	str_rule = '''Тоня - Венди
-Тихон - Питер Пен
-Маша - Розетта
-Таня - Видия
-Леся - Динь-Динь
-Влад Марков - Капитан Крюк
-Даша Чернова - Тень
-Алина Колоскова - Незабудка
-Алена Приходько - Серебрянка
-Арина Вронская - Фея Ди
-Вера Кадырова - Заяц
-Саша Шишкина - Фауна
-Соня Степанова - Фея цветочная
-Савелий - Пират
-Люба Кадырова - Пират
-Ксюша Потапова - королева Клэрион
-Надя Кадырова - тигровая Лилия
-Саша Стексова - Зарина
-Оля Лисовая - министр весны
-Дина - Джон Дарлинг
-Алиса Шабельская - Мэри Дарлинг
-Арина Гринева - пират
-Захар Новаковский - пират
-Оксана Новаковская - индеец
-Алена Волкова - Клэнк
-Даша Барсагаева - Бобл
-Полина Григорьева - Льдинка
-Лёня - Иней
-Мария Сакун - русалка
-Милана - Пират
-Лалита - фея Лили
-Лёня Скутин - Пират
-Катя Трошина - фея
-Ефим - пират'''
-	[print(i.split('-')[1]) for i in str_rule.split('\n')]
+	h.create_markup2('set_name', [['1'],['2'],['3'],['4'],['5']])
+	#[print(i.split('-')[1]) for i in str_rule.split('\n')]
