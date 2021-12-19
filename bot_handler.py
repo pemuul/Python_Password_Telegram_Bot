@@ -81,9 +81,15 @@ f'''Я буду хранить твои пороли.
 			get_table = self.Table_password.find_set(call_P.message.chat.id, params[1])
 			if get_table != [[]]:
 				print(get_table)
-				return_val = [[g[1]] for g in get_table]
-				
-				message_send = self.bot.send_message(call_P.message.chat.id, f'Схожие с : {params[1]}', reply_markup=self.create_markup2('set_name', return_val))
+				#return_val = [[g[1]] for g in get_table]
+				self.bot.delete_message(call_P.message.chat.id,call_P.message.message_id)
+				message_send = self.bot.send_message(call_P.message.chat.id, 
+						f'Схожие с : {params[1]}', 
+						reply_markup=self.create_markup2('set_name', [[g[1]] for g in get_table]))
+				#self.add_message_to_delete(call_P.message.chat.id, call_P.message.message_id)
+				#self.delete_message(call_P)
+				#reply_markup=self.create_markup2('set_name', [[g[1]] for g in get_table])
+				return_val = f'Схожие с : {params[1]}'
 				delete_new_message = True
 			else:
 				return_val = 'Таких записей нет'
@@ -94,7 +100,10 @@ f'''Я буду хранить твои пороли.
 			self.bot.delete_message(call_P.message.chat.id,call_P.message.message_id)
 			return()
 		if message_send == None:
+		#if reply_markup == None:
 			message_send = self.bot.edit_message_text(f"{return_val}", call_P.message.chat.id,call_P.message.message_id)
+		#else:
+		#	message_send = self.bot.edit_message_text(f"{return_val}", call_P.message.chat.id,call_P.message.message_id,reply_markup=self.create_markup2('set_name', return_val))
 		#print(message_send.message_id)
 		if delete_new_message:
 			self.add_message_to_delete(call_P.message.chat.id, message_send.message_id)
