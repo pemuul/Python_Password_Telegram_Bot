@@ -97,7 +97,7 @@ class Database:
 	def select_data_to_key(self, key_data_P, key_P, primery_P='=', previus_P='',end_P=''):
 		filter_set = ''
 		for i in range(len(key_P)):
-			filter_set += f'''{str(key_P[i])} {primery_P} '{previus_P}{str(key_data_P[i])}{end_P}' and '''
+			filter_set += f'''"{str(key_P[i])}" {primery_P} '{previus_P}{str(key_data_P[i])}{end_P}' and '''
 		filter_set = filter_set[:-4]
 		return filter_set
 
