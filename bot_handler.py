@@ -3,6 +3,7 @@
 import numexpr as ne
 import json
 import cryptocode
+import os
 
 from telebot import types
 #from sqllite_heandler import Table
