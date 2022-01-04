@@ -24,7 +24,7 @@ def test(message):
 	if message.chat.id == bot_setup.ADMIN_ID:
 		try:
 			print(os.environ.get('DATABASE_URL'))
-			bot.send_message(message.chat.id, os.environ.get(text = message.text.split(' ')[1]))
+			bot.send_message(message.chat.id, os.environ.get(message.text.split(' ')[1]))
 		except:
 			bot.send_message(message.chat.id, 'Ошибка')
 		#print(bot.pin_chat_message(message.chat.id, message.message_id))
