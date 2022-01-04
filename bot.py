@@ -14,6 +14,11 @@ admin_id = int(os.environ.get('ADMIN_ID'))
 def send_welcome(message):
 	handler.send_welcome(message)
 
+@bot.message_handler(commands=['add_password', 'get_password','delete_password'])
+def help_comand(message):
+	handler.send_welcome(message)
+
+
 @bot.message_handler(commands=['add_colum'])
 def get_log(message):
 	if message.chat.id == admin_id:
@@ -45,8 +50,6 @@ def test(message):
 			bot.send_message(message.chat.id, os.environ.get(message.text.split(' ')[1]))
 		except:
 			bot.send_message(message.chat.id, 'Ошибка')
-		#print(bot.pin_chat_message(message.chat.id, message.message_id))
-
 
 @bot.message_handler(commands=['get_log'])
 def get_log(message):
