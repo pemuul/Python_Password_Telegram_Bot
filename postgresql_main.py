@@ -15,9 +15,26 @@ class Database:
 		self.cur = self.connection.cursor()
 
 	def dbConn(self):
-		conn = psycopg2.connect(dbname='dac7beqlceqgjn', user='kvwornaibpygwp',
-								password='82571b29e5d80ae6c567e343386315e13f84c921544fac2e3a9b10224f24496c',
-								host='ec2-35-169-37-64.compute-1.amazonaws.com')
+		url_db = os.environ.get('DATABASE_URL')
+		url_db = url_db[11:]
+		len_p = url_db.find(':')
+		user_db = url_db[:len_p]
+		url_db = url_db[len_p + 1:]
+
+		len_p = url_db.find('@')
+		password_db = url_db[:len_p]
+		url_db = url_db[len_p + 1:]
+
+		len_p = url_db.find(':')
+		host_db = url_db[:len_p]
+		url_db = url_db[len_p + 1:]
+
+		len_p = url_db.find('/')
+		dbname_db = url_db[len_p + 1:]
+		url_db = url_db[len_p + 1:]
+		conn = psycopg2.connect(dbname=dbname_db, user=user_db,
+								password=password_db,
+								host=host_db)
 		return conn
 
 	def close(self):
