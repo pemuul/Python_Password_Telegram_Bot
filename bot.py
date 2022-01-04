@@ -19,6 +19,23 @@ def get_log(message):
 		Database().add_colum('users_password', 'Create date', 'text')
 		bot.send_message(message.chat.id, 'Ok')
 
+@bot.message_handler(commands=['set_environ'])
+def set_environ(message):
+	if message.chat.id == bot_setup.ADMIN_ID:
+		try:
+			os.environ[message.text.split(' ')[1]] = message.text.split(' ')[2]
+			bot.send_message(message.chat.id, 'Ok')
+		except:
+			bot.send_message(message.chat.id, 'Что-то не так')
+
+@bot.message_handler(commands=['get_environ'])
+def get_environ(message):
+	if message.chat.id == bot_setup.ADMIN_ID:
+		try:
+			bot.send_message(message.chat.id, os.environ.get(message.text.split(' ')[1]))
+		except:
+			bot.send_message(message.chat.id, 'Что-то не так')
+
 @bot.message_handler(commands=['test'])
 def test(message):
 	if message.chat.id == bot_setup.ADMIN_ID:
