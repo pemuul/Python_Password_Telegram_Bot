@@ -22,7 +22,11 @@ def get_log(message):
 @bot.message_handler(commands=['test'])
 def test(message):
 	if message.chat.id == bot_setup.ADMIN_ID:
-		print(bot.pin_chat_message(message.chat.id, message.message_id))
+		try:
+			print(os.environ.get('DATABASE_URL'))
+			bot.send_message(message.chat.id, os.environ.get('DATABASE_URL'))
+		except:
+			bot.send_message(message.chat.id, 'Ошибка')
 		#print(bot.pin_chat_message(message.chat.id, message.message_id))
 
 
