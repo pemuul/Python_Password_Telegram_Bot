@@ -11,7 +11,7 @@ from postgresql_heandler import Table
 import bot_setup
 
 #admin_id = bot_setup.ADMIN_ID
-admin_id = os.environ.get('ADMIN_ID')
+admin_id = int(os.environ.get('ADMIN_ID'))
 
 def my_print(text_P):
 	print(text_P)

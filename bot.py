@@ -8,7 +8,7 @@ from loging import Log_heandler
 from sqllite_main import Database
 
 bot = telebot.TeleBot(os.environ.get('TOKEN'))
-admin_id = os.environ.get('ADMIN_ID')
+admin_id = int(os.environ.get('ADMIN_ID'))
 
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
