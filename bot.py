@@ -7,7 +7,8 @@ from bot_handler import Handler
 from loging import Log_heandler
 from sqllite_main import Database
 
-bot = telebot.TeleBot(bot_setup.TOKEN)
+bot = telebot.TeleBot(os.environ.get('TOKEN'))
+admin_id = os.environ.get('ADMIN_ID')
 
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
@@ -15,13 +16,13 @@ def send_welcome(message):
 
 @bot.message_handler(commands=['add_colum'])
 def get_log(message):
-	if message.chat.id == bot_setup.ADMIN_ID:
+	if message.chat.id == admin_id:
 		Database().add_colum('users_password', 'Create date', 'text')
 		bot.send_message(message.chat.id, 'Ok')
 
 @bot.message_handler(commands=['set_environ'])
 def set_environ(message):
-	if message.chat.id == bot_setup.ADMIN_ID:
+	if message.chat.id == admin_id:
 		try:
 			os.environ[message.text.split(' ')[1]] = message.text.split(' ')[2]
 			bot.send_message(message.chat.id, 'Ok')
@@ -30,7 +31,7 @@ def set_environ(message):
 
 @bot.message_handler(commands=['get_environ'])
 def get_environ(message):
-	if message.chat.id == bot_setup.ADMIN_ID:
+	if message.chat.id == admin_id:
 		try:
 			bot.send_message(message.chat.id, os.environ.get(message.text.split(' ')[1]))
 		except:
@@ -38,7 +39,7 @@ def get_environ(message):
 
 @bot.message_handler(commands=['test'])
 def test(message):
-	if message.chat.id == bot_setup.ADMIN_ID:
+	if message.chat.id == admin_id:
 		try:
 			print(os.environ.get('DATABASE_URL'))
 			bot.send_message(message.chat.id, os.environ.get(message.text.split(' ')[1]))
@@ -49,7 +50,7 @@ def test(message):
 
 @bot.message_handler(commands=['get_log'])
 def get_log(message):
-	if message.chat.id == bot_setup.ADMIN_ID:
+	if message.chat.id == admin_id:
 		text = message.text.split(' ')
 		if len(text) < 2:
 			log_name = Log_heandler().get_log_name_file()
@@ -63,13 +64,13 @@ def get_log(message):
 
 @bot.message_handler(commands=['get_db'])
 def get_db(message):
-	if message.chat.id == bot_setup.ADMIN_ID:
+	if message.chat.id == admin_id:
 		with open('db_sqlite.sqlite', 'r', encoding='utf-8') as log_file:
 			bot.send_document(message.chat.id, log_file)
 
 @bot.message_handler(commands=['get_file'])
 def get_file(message):
-	if message.chat.id == bot_setup.ADMIN_ID:
+	if message.chat.id == admin_id:
 		text = message.text.split(' ')
 		if len(text) < 2:
 			bot.send_message(message.chat.id, 'Введите имя файла')
@@ -82,7 +83,7 @@ def get_file(message):
 
 @bot.message_handler(commands=['admin'])
 def admin(message):
-	if message.chat.id == bot_setup.ADMIN_ID:	
+	if message.chat.id == admin_id:	
 		bot.send_message(message.from_user.id, 'Доступ получен', reply_markup=handler.create_markup('admin'))
 
 
