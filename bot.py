@@ -8,7 +8,7 @@ from loging import Log_heandler
 #from sqllite_main import Database
 
 #import postgresql_main
-from postgresql_main import Database
+from postgresql_main import Database, Database_Mgt
 
 bot = telebot.TeleBot(os.environ.get('TOKEN'))
 admin_id = int(os.environ.get('ADMIN_ID'))
@@ -126,7 +126,7 @@ def callback_inline(call):
 	handler.button_answer(call)
 
 
-on_try = Database().project_in_server() # понимаем, где запущен код
+on_try = Database_Mgt().project_in_server() # понимаем, где запущен код
 
 while True:
 	if on_try:
