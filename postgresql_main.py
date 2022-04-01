@@ -2,20 +2,10 @@ import sqlite3
 import psycopg2
 import os
 
-class Database:
-	"""sqlite3 database class that holds testers jobs"""
-	def __init__(self, database_name_P):
-		"""Initialize db class variables"""
-		if os.getcwd() == '/app':
-			self.connection = self.dbConn()
-		else:
-			self.connection = sqlite3.connect(database_name_P, check_same_thread=False)
-		
-		#self.table_name = table_name_P
-		self.cur = self.connection.cursor()
-
-	def dbConn(self):
-		url_db = os.environ.get('DATABASE_URL')
+class Database_Mgt:
+	def get_local_database_url(self, database_url_name_P):
+		# у нас есть локальная переменная хранящая подключение к postgres, и мы её разбираем, чтобы получить данные для коннекта 
+		url_db = os.environ.get(database_url_name_P)
 		url_db = url_db[11:]
 		len_p = url_db.find(':')
 		user_db = url_db[:len_p]
@@ -32,32 +22,45 @@ class Database:
 		len_p = url_db.find('/')
 		dbname_db = url_db[len_p + 1:]
 		url_db = url_db[len_p + 1:]
-		conn = psycopg2.connect(dbname=dbname_db, user=user_db,
-								password=password_db,
-								host=host_db)
+
+		return [dbname_db, user_db, password_db, host_db]
+
+	def project_in_server(self):
+		# понимаем, на сервере или локально запущен бот
+		return os.getcwd() == '/app'
+
+class Database:
+	def __init__(self, database_name_P=''):
+		if Database_Mgt().project_in_server():
+			self.connection = self.dbConn() # подключение к базе на сервере 
+		else:
+			self.connection = sqlite3.connect(database_name_P, check_same_thread=False) # подключение к локально базе данных
+		
+		self.cur = self.connection.cursor()
+
+	def dbConn(self):
+		# распарсиваем локальную переменную DATABASE_URL и формируем подключение к серверу
+		database_data = Database_Mgt().get_local_database_url('DATABASE_URL')
+		conn = psycopg2.connect(dbname=database_data[0], user=database_data[1],
+								password=database_data[2],
+								host=database_data[3])
 		return conn
 
 	def close(self):
-		"""close sqlite3 connection"""
 		self.connection.close()
 
 	def execute(self, new_data):
-		"""execute a row of data to current cursor"""
 		self.cur.execute(new_data)
 
 	def executemany(self, many_new_data):
-		"""add many new data to database in one go"""
 		self.create_table()
 		self.cur.executemany('REPLACE INTO jobs VALUES(?, ?, ?, ?)', many_new_data)
 
 	def delete_data(self, table_name_P, shem_table_name_P, data_P):
-		#key_data = ", ".join([str(i) for i in data])
 		key_list = shem_table_name_P
 		print('ok2')
-		#key = ", ".join([str(i) for i in key_list])
 		data_P = [str(i) for i in data_P]
 		print(data_P)
-		filter_set = ''#[[f'{str(data[i])}, {str(key_list[i])}'] for i in range(len(key_list))]
 		for i in range(len(key_list)):
 			filter_set += f'''"{str(key_list[i])}" = '{str(data_P[i])}' and '''
 		filter_set = filter_set[:-4]
@@ -73,7 +76,6 @@ class Database:
 		self.cur.execute(f"CREATE TABLE IF NOT EXISTS {table_name_P}({row_line}, primary key ({key_list}))")
 
 	def commit(self):
-		"""commit changes to database"""
 		self.connection.commit()
 
 	def get_table(self, table_name_P):
@@ -125,7 +127,6 @@ class Database:
 			#return [fetch for fetch in fetchall_P[0]]
 		else:
 			return [[]]
-			#return []
 
 	def add_colum(self, table_name_P, field_name_P, field_type_P):
 		return self.select(f'alter table {table_name_P} add "{field_name_P}" {field_type_P}')
@@ -136,9 +137,10 @@ if __name__ == '__main__':
 	#db.create_table('users_password', ["User_ID integer", 
 	#					"Description text",
 	#					"Password text", 'primary key  (User_ID, Description)'])
-	
+	print(db.select('SELECT * FROM users_password'))
+
 	#db.insert_data('users_password', ["User_ID", "Description", "Password"], ['13', '14124', '1234'])
-	print(db.find_set('users_password', ['1087624586', '123'], ["User_ID", "Description"]))
+	#print(db.find_set('users_password', ['1087624586', '123'], ["User_ID", "Description"]))
 	#db.commit()
 	#print(db.get_data('users_password'))
 	#db.get_data('users_password', ['1', '2', '3'], ['4', '5', '6'])
