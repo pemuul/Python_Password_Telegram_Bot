@@ -88,16 +88,16 @@ def get_db(message):
 
 		connection = None
 
-		try:
-			connection = Database('db_sqlite.sqlite').connection
-			connection_backup = sqlite3.connect('beckup.sqlite')
-			connection.backup(connection_backup, pages=0, progress=None, name="main", sleep=0.250)
-			connection_backup.close()
+		#try:
+		connection = Database('db_sqlite.sqlite').connection
+		connection_backup = sqlite3.connect('beckup.sqlite')
+		connection.backup(connection_backup, pages=0, progress=None, name="main", sleep=0.250)
+		connection_backup.close()
 
-			with open('beckup.sqlite', 'r') as log_file:
-				bot.send_document(message.chat.id, log_file)
-		except:
-			bot.send_message(message.chat.id, 'Не вышло:(')
+		with open('beckup.sqlite', 'r') as log_file:
+			bot.send_document(message.chat.id, log_file)
+		#except:
+		#	bot.send_message(message.chat.id, 'Не вышло:(')
 
 		os.remove('beckup.sqlite')
 
