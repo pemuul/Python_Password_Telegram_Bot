@@ -19,6 +19,7 @@ def send_welcome(message):
 
 @bot.message_handler(commands=['add_password', 'get_password','delete_password'])
 def help_comand(message):
+	# при вводе вспомогательной команды 
 	handler.send_welcome(message)
 
 
@@ -48,14 +49,7 @@ def get_environ(message):
 @bot.message_handler(commands=['test'])
 def test(message):
 	if message.chat.id == admin_id:
-		#try:
-			#print(os.environ.get('DATABASE_URL'))
-		#text_l = message.text[len('/test') + 1:]
-		#print(text_l)
 		d = Database('db_sqlite.sqlite')
-		#text_l = d.select(text_l)
-		
-
 		import sqlite3
 		from postgresql_heandler import Table
  
@@ -71,13 +65,6 @@ def test(message):
 
 			text_l = d.select(f'SELECT * FROM {table_name}')
 
-
-		
-
-		#os.remove("db_sqlite_to_dowland.sqlite")
-		#except:
-		#	bot.send_message(message.chat.id, 'Ошибка')
-
 @bot.message_handler(commands=['get_log'])
 def get_log(message):
 	if message.chat.id == admin_id:
@@ -90,20 +77,36 @@ def get_log(message):
 			with open(log_name, 'r') as log_file:
 				bot.send_document(message.chat.id, log_file)
 		except:
-			bot.send_message(message.chat.id, 'Такого файла нет!')
+			bot.send_message(message.chat.id, 'Логов нет!')
 
 @bot.message_handler(commands=['get_db'])
 def get_db(message):
 	if message.chat.id == admin_id:
-		with open('db_sqlite.sqlite', 'r', encoding='utf-8') as log_file:
-			bot.send_document(message.chat.id, log_file)
+		import psycopg2
+		import sys
+		import sqlite3
+
+		connection = None
+
+		try:
+			connection = Database('db_sqlite.sqlite').connection
+			connection_backup = sqlite3.connect('beckup.sqlite')
+			connection.backup(connection_backup, pages=0, progress=None, name="main", sleep=0.250)
+			connection_backup.close()
+
+			with open('beckup.sqlite', 'r') as log_file:
+				bot.send_document(message.chat.id, log_file)
+		except:
+			bot.send_message(message.chat.id, 'Не вышло:(')
+
+		os.remove('beckup.sqlite')
 
 @bot.message_handler(commands=['get_file'])
 def get_file(message):
 	if message.chat.id == admin_id:
 		text = message.text.split(' ')
 		if len(text) < 2:
-			bot.send_message(message.chat.id, 'Введите имя файла')
+			bot.send_message(message.chat.id, 'ERRROR: Введите имя файла /get_file file_name.format')
 			return ()
 		try:
 			with open(text[1], 'r') as log_file:

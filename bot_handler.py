@@ -130,6 +130,7 @@ class Handler:
 		self.global_params = {}
 
 	def send_welcome(self, message):
+		# при нажатии на вспомогательную команду возвращаем подсказку 
 		my_print(message.json['text'])
 		comand = message.json['text']
 		if comand in ['/start', '/help']:
@@ -146,12 +147,13 @@ class Handler:
 		self.bot.reply_to(message, reply_text)
 
 	def button_answer(self, call_P):
+		# при нажатии на кнопку под сообщением
 		params = call_P.data.split(', ')
-		#print(params)
 		return_val = ''
 		delete_new_message = False
 		message_send = None
 		if params[0] == 'Get':
+			# при нажатии на кнопку Получить пароль
 			get_table = self.Table_password.get(call_P.message.chat.id, params[1])
 			if get_table != []:
 				self.user_get_password[call_P.message.chat.id] = get_table[2]
@@ -159,34 +161,33 @@ class Handler:
 				delete_new_message = True
 			else:
 				return_val = 'Такой записи нет'
+
 		elif params[0] == 'Insert':
+			# при нажатии на кнопку Добавить пароль
 			if self.Table_password.get(call_P.message.chat.id, params[1]) == []:
 				return_val = 'Введите пороль'
-				#if not call_P.message.chat.id in [str(i) for i in self.user_insert_password.keys()]:
 				self.user_insert_password[call_P.message.chat.id] = {'description' : params[1], 'password' : '', 'message_id' : call_P.message.message_id}
 			else:
 				return_val = 'Такое название занято, придумайте другое'
+
 		elif params[0] == 'Delete':
+			# если нажата кнопка Удалить пароль
 			if self.Table_password.delete(call_P.message.chat.id, params[1]):
 				return_val = 'Пороль удалён'
 			else:
 				return_val = 'Произошла какая-то ошибка'
 		elif params[0] == 'Delete_button':
-			#self.delete_this_message(call_P.message.chat.id,call_P.message.message_id)
-			pass # всё удалитс само ниж
+			pass # всё удалится само ниж
+
 		elif params[0] == 'FindSet':
+			# выводим клавиатуру похожих записей
 			get_table = self.Table_password.find_set(call_P.message.chat.id, params[1])
 			if get_table != [[]]:
 				print(get_table)
-				#return_val = [[g[1]] for g in get_table]
-				#self.bot.delete_message(call_P.message.chat.id,call_P.message.message_id)
 				self.delete_this_message(call_P.message.chat.id,call_P.message.message_id)
 				message_send = self.bot.send_message(call_P.message.chat.id, 
 						f'Схожие с : {params[1]}', 
-						reply_markup=self.create_markup2('set_name', [[g[1]] for g in get_table]))
-				#self.add_message_to_delete(call_P.message.chat.id, call_P.message.message_id)
-				#self.delete_message(call_P)
-				#reply_markup=self.create_markup2('set_name', [[g[1]] for g in get_table])
+						reply_markup=self.create_markup('set_name', [[g[1]] for g in get_table]))
 				return_val = f'Схожие с : {params[1]}'
 				delete_new_message = True
 			else:
@@ -195,14 +196,12 @@ class Handler:
 			pass
 
 		if return_val == '':
-			#self.bot.delete_message(call_P.message.chat.id,call_P.message.message_id)
 			self.delete_this_message(call_P.message.chat.id,call_P.message.message_id)
 			return()
 		if message_send == None:
-		#if reply_markup == None:
 			message_send = self.bot.edit_message_text(f"{return_val}", call_P.message.chat.id,call_P.message.message_id)
 		#else:
-		#	message_send = self.bot.edit_message_text(f"{return_val}", call_P.message.chat.id,call_P.message.message_id,reply_markup=self.create_markup2('set_name', return_val))
+		#	message_send = self.bot.edit_message_text(f"{return_val}", call_P.message.chat.id,call_P.message.message_id,reply_markup=self.create_markup('set_name', return_val))
 		#print(message_send.message_id)
 		if delete_new_message:
 			self.add_message_to_delete(call_P.message.chat.id, message_send.message_id)
@@ -214,7 +213,7 @@ class Handler:
 	def admin(self, text_message_P, message):
 		if message.from_user.id == admin_id:	
 			if text_message_P == 'admin':
-				self.bot.send_message(message.from_user.id, 'Доступ получен', reply_markup=self.create_markup('admin'))
+				self.bot.send_message(message.from_user.id, 'Доступ получен', reply_markup=self.create_markup_not_data('admin'))
 				return True
 			else:	
 				return False
@@ -223,20 +222,17 @@ class Handler:
 		
 
 	def answer(self, message):
+		# основная функция, обрабатывает пришедьшие пользователем сообщения
 		text_message = message.json['text']
 		if self.admin(text_message, message):
 			return()
 
-		''''''''''''''''''''''''''''''''''''''
+		self.new_user(message)
 
-		if self.Users.get(message.chat.id) == []:
-			print(self.Users.insert(message.chat.id, self.get_name, None, 'Nother'))
-			self.bot.send_message(admin_id, f'{str(self.get_name(message))} - теперь с нами')
 		text_answer = text_message
 
-		self.delete_message_for_user(message.chat.id)
+		self.delete_message_for_user(message.chat.id) 
 
-		''''''''''''''''''''''''''''''''''''''
 		if message.chat.id in [i for i in self.user_get_password.keys()]:
 			print(self.user_get_password)
 			text_answer = cryptocode.decrypt(self.user_get_password[message.chat.id], text_message)
@@ -281,36 +277,29 @@ class Handler:
 			self.add_message_to_delete(message.from_user.id, message_send.message_id)
 
 	def delete_this_message(self, user_id_P, message_id_P):
+		# удаляем сообщение и удаляем из саиска на очередь удаления, если оно там есть
 		message_set = self.message_to_delete.get(user_id_P)
 		if message_set != None:
-			#message = message_set.get(message_id_P)
 			if message_id_P in message_set:
 				del self.message_to_delete[user_id_P][message_set.index(message_id_P)]
 		self.bot.delete_message(user_id_P, message_id_P)
 
 
 	def add_message_to_delete(self, user_id_P, message_id_P):
-		#print(self.message_to_delete)
+		# добавляем сообшение в очередь на удаление
 		if self.message_to_delete.get(user_id_P) == None:
 			self.message_to_delete[user_id_P] = []	
 		if not message_id_P in self.message_to_delete[user_id_P]:
 			self.message_to_delete[user_id_P].append(message_id_P)
-		#print(self.message_to_delete)
-
-	#def delete_message(self, call_P):
-	#	if self.message_to_delete.get(call_P.message.chat.id) != None:
-	#		del self.message_to_delete[call_P.message.chat.id][self.message_to_delete[call_P.message.chat.id].index(call_P.message.message_id)]
-
-		#self.bot.delete_message(call_P.message.chat.id,call_P.message.message_id)
 
 	def delete_message_for_user(self, user_id_P):
+		# удаляем все сообщения из очереди на удаление для данного пользователя
 		if self.message_to_delete.get(user_id_P) != None:
 			for message_id in self.message_to_delete[user_id_P]:
-				#print(message_id)
 				self.bot.delete_message(user_id_P,message_id)
 			del self.message_to_delete[user_id_P]
 
-	def create_markup(self, shem_button_name_P):
+	def create_markup_not_data(self, shem_button_name_P):
 		shem_menu_button = self.shem_json[shem_button_name_P]
 		row_list = [str(i) for i in shem_menu_button.keys()]
 		markup = types.ReplyKeyboardMarkup(True, True)
@@ -320,7 +309,7 @@ class Handler:
 			markup.row(*btn)
 		return markup
 
-	def create_markup2(self, shem_button_name_P, data_to_button_P=[[]]):
+	def create_markup(self, shem_button_name_P, data_to_button_P=[[]]):
 		shem_menu_button = self.shem_json[shem_button_name_P]
 		row_list = [str(i) for i in shem_menu_button.keys()]
 		markup = types.ReplyKeyboardMarkup(True, True)
@@ -328,7 +317,6 @@ class Handler:
 		for data in data_to_button_P:
 			btn = []
 			for i in range(len(row_button)):
-				#if '%' in row_button[i]:
 				b = row_button[i].replace(f'%{i + 1}', data[i])
 				btn.append(types.KeyboardButton(b))
 				print(b)
@@ -367,8 +355,13 @@ class Handler:
 		my_print(last_message)
 		self.bot.send_message(admin_id, last_message)
 
+	def new_user(self, message_P):
+		if self.Users.get(message_P.chat.id) == []:
+			print(self.Users.insert(message_P.chat.id, self.get_name, None, 'Nother'))
+			self.bot.send_message(admin_id, f'{str(self.get_name(message_P))} - теперь с нами')
+
 if __name__ == '__main__':
 	h = Handler(bot = '')
 	#h.add_message_to_delete(12445, 234243)
-	h.create_markup2('set_name', [['1'],['2'],['3'],['4'],['5']])
+	h.create_markup('set_name', [['1'],['2'],['3'],['4'],['5']])
 	#[print(i.split('-')[1]) for i in str_rule.split('\n')]
