@@ -141,11 +141,11 @@ def get_db(message):
 	# запросами выкачать все данные из базы и переместить в основную 
 	connection_backup.close()
 
-	try:
-		with open(beckup_db_name, 'r') as becup_file:
-			bot.send_document(message.chat.id, becup_file)
-	except:
-		bot.send_message(message.chat.id, 'Не вышло:(')
+	#try:
+	with open(beckup_db_name, 'r') as becup_file:
+		bot.send_document(message.chat.id, becup_file)
+	#except:
+	#	bot.send_message(message.chat.id, 'Не вышло:(')
 
 	#print(f'{message.chat.id}: Сборка окончена')
 	Log_heandler().save_log(f'{message.chat.id}: Сборка окончена')
