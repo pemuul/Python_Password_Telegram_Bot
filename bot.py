@@ -81,6 +81,8 @@ def get_log(message):
 
 @bot.message_handler(commands=['get_db'])
 def get_db(message):
+	# создаём SQLLite файл, переливаем в него все данные и отправляем 
+	'''
 	if message.chat.id == admin_id:
 		import psycopg2
 		import sys
@@ -100,6 +102,54 @@ def get_db(message):
 		#	bot.send_message(message.chat.id, 'Не вышло:(')
 
 		os.remove('beckup.sqlite')
+	'''
+	import sqlite3
+	import json
+	from postgresql_heandler import Table
+	# создать новую базу SQLite
+	beckup_db_name = 'beckup.sqlite'
+	connection_backup = sqlite3.connect(beckup_db_name)
+	
+	#print(f'{message.chat.id}: Начал сборку данных')
+	Log_heandler().save_log(f'{message.chat.id}: Начал сборку данных')
+	bot.send_message(message.chat.id, 'Сборка данный начата!')
+
+	# получить все таблицы и через цикл создать их в новой базе
+	with open("shem_table.json", "r", encoding='utf-8') as read_file:
+		shem_json = json.load(read_file)
+		print(shem_json.keys())
+	for table_name in shem_json:
+		#print(table_name)
+		table_becup = Table(table_name, beckup_db_name, False)
+		table_main = Table(table_name)
+		db_becup = table_becup.db
+		cursor_becup = db_becup.cur
+		#print([i[0] for i in table.get_all()])
+		for data in table_main.get_all():
+			#
+			data_set = "', '".join(data)
+			#print(shem_json[table_name]['always_fild'])
+			line_name = '", "'.join(shem_json[table_name]['always_fild'])
+			line_name = f'"{line_name}"'
+			#print(line_name)
+			#print(f"INSERT INTO {table_name} ({line_name}) VALUES('{data_set}')")
+			cursor_becup.execute(f"INSERT INTO {table_name} ({line_name}) VALUES('{data_set}')")
+
+		#print(table_becup.get_all())
+		db_becup.close()
+	# запросами выкачать все данные из базы и переместить в основную 
+	connection_backup.close()
+
+	try:
+		with open(beckup_db_name, 'r') as becup_file:
+			bot.send_document(message.chat.id, becup_file)
+	except:
+		bot.send_message(message.chat.id, 'Не вышло:(')
+
+	#print(f'{message.chat.id}: Сборка окончена')
+	Log_heandler().save_log(f'{message.chat.id}: Сборка окончена')
+
+	os.remove(beckup_db_name)
 
 @bot.message_handler(commands=['get_file'])
 def get_file(message):

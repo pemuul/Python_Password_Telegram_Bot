@@ -14,8 +14,8 @@ class Table(object):
 
 	log = Log_heandler()
 
-	def __init__(self, table_name_P):
-		self.db = Database(DB_LOCATION) # на сервере коннект произойдёт напрямую в базу postgresql, иначе в локалтную sqlite
+	def __init__(self, table_name_P, db_name_P=DB_LOCATION, local_db_P=True):
+		self.db = Database(db_name_P, local_db_P) # на сервере коннект произойдёт напрямую в базу postgresql, иначе в локалтную sqlite
 		self.table_name = table_name_P
 		self.shem_table = self.shem_json[table_name_P]['always_fild']
 		self.table_key = self.shem_json[table_name_P]['key']

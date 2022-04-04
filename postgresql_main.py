@@ -27,11 +27,12 @@ class Database_Mgt:
 
 	def project_in_server(self):
 		# понимаем, на сервере или локально запущен бот
+		#return True
 		return os.getcwd() == '/app'
 
 class Database:
-	def __init__(self, database_name_P=''):
-		if Database_Mgt().project_in_server():
+	def __init__(self, database_name_P='', local_db_P=True):
+		if Database_Mgt().project_in_server() and local_db_P:
 			self.connection = self.dbConn() # подключение к базе на сервере 
 		else:
 			self.connection = sqlite3.connect(database_name_P, check_same_thread=False) # подключение к локально базе данных
