@@ -59,14 +59,17 @@ class Database:
 
 	def delete_data(self, table_name_P, shem_table_name_P, data_P):
 		key_list = shem_table_name_P
-		print('ok2')
+		#print('ok2')
 		data_P = [str(i) for i in data_P]
-		print(data_P)
+		#print(data_P)
+		filter_set = ''
 		for i in range(len(key_list)):
 			filter_set += f'''"{str(key_list[i])}" = '{str(data_P[i])}' and '''
+		#print(filter_set)
 		filter_set = filter_set[:-4]
 		print(f'DELETE FROM {table_name_P} WHERE {filter_set}')
 		self.cur.execute(f'DELETE FROM {table_name_P} WHERE {filter_set}')
+		self.commit()
 
 
 	def create_table(self, table_name_P, shem_table_name_P):
@@ -75,6 +78,7 @@ class Database:
 		row_line = ''.join([f'"{row}" {shem[row]}, ' for row in row_list])[:-2]
 		key_list = ''.join([f'"{i}", ' for i in shem_table_name_P['key']])[:-2]
 		self.cur.execute(f"CREATE TABLE IF NOT EXISTS {table_name_P}({row_line}, primary key ({key_list}))")
+		self.commit()
 
 	def commit(self):
 		self.connection.commit()

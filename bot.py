@@ -108,7 +108,7 @@ def get_db(message):
 	from postgresql_heandler import Table
 	# создать новую базу SQLite
 	beckup_db_name = 'beckup.sqlite'
-	connection_backup = sqlite3.connect(beckup_db_name)
+	connection_backup = sqlite3.connect(beckup_db_name, check_same_thread=False)
 	
 	#print(f'{message.chat.id}: Начал сборку данных')
 	Log_heandler().save_log(f'{message.chat.id}: Начал сборку данных')
@@ -119,7 +119,7 @@ def get_db(message):
 		shem_json = json.load(read_file)
 		print(shem_json.keys())
 	for table_name in shem_json:
-		#print(table_name)
+		print(table_name)
 		table_becup = Table(table_name, beckup_db_name, False)
 		table_main = Table(table_name)
 		db_becup = table_becup.db
@@ -133,8 +133,9 @@ def get_db(message):
 			line_name = '", "'.join(shem_json[table_name]['always_fild'])
 			line_name = f'"{line_name}"'
 			#print(line_name)
-			#print(f"INSERT INTO {table_name} ({line_name}) VALUES('{data_set}')")
+			print(f"INSERT INTO {table_name} ({line_name}) VALUES('{data_set}')")
 			cursor_becup.execute(f"INSERT INTO {table_name} ({line_name}) VALUES('{data_set}')")
+			db_becup.commit()
 
 		#print(table_becup.get_all())
 		db_becup.close()
@@ -142,7 +143,7 @@ def get_db(message):
 	connection_backup.close()
 
 	#try:
-	with open(beckup_db_name, 'r', encoding='cp866') as becup_file:
+	with open(beckup_db_name, 'r') as becup_file:
 		bot.send_document(message.chat.id, becup_file)
 	#except:
 	#	bot.send_message(message.chat.id, 'Не вышло:(')
@@ -181,6 +182,7 @@ def callback_inline(call):
 
 
 on_try = Database_Mgt().project_in_server() # понимаем, где запущен код
+print(on_try)
 
 while True:
 	if on_try:
@@ -196,3 +198,6 @@ while True:
 		Log_heandler().save_log('Бот был оставновлен')
 
 
+# у нас при получении региср не важен, но при удалении надо как-то его получить
+#	Test4 - создаём
+#	test4 - удаляем, говорит, что ок, но не удаляет, так как пытается удалить test4, а надо Test4

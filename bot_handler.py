@@ -248,9 +248,6 @@ class Handler:
 			delete_new_message = False
 			if self.user_insert_password[message.chat.id]['password'] == '':
 				text_answer = 'Теперь введи ключ'
-				#self.bot.delete_message(message.from_user.id,self.user_insert_password[message.chat.id]['message_id'])
-				self.delete_this_message(message.from_user.id,self.user_insert_password[message.chat.id]['message_id'])
-				#self.user_insert_password[message.chat.id]['message_id'] = message.message_id
 				self.user_insert_password[message.chat.id]['password'] = text_message
 				delete_new_message = True
 			else:
@@ -258,10 +255,8 @@ class Handler:
 					text_answer = 'Готово'
 				else:
 					text_answer = 'Что-то пощло не так, попробуйте ещё раз.'
-				#self.bot.delete_message(message.from_user.id,self.user_insert_password[message.chat.id]['message_id'])
 				del self.user_insert_password[message.chat.id]
 				
-			#self.bot.delete_message(message.from_user.id,message.message_id)
 			message_send = self.bot.send_message(message.from_user.id, text_answer)
 			if delete_new_message:
 				self.add_message_to_delete(message.from_user.id, message_send.message_id)
@@ -346,18 +341,18 @@ class Handler:
 			first_name = message.from_user.first_name
 		except:
 			pass
-		return f'{last_name} {first_name}'
+		return [last_name, first_name]
 
 	def run_bot(self):
 		self.bot.send_message(admin_id, 'Бот Save_Password_bot был запущен')
 		self.bot.polling(none_stop=True) # потом удалить
-		last_message = f'Bye! User {self.get_name(self.last_message)} kill me :('
+		last_message = f'Bye! User {str(self.get_name(self.last_message))} kill me :('
 		my_print(last_message)
 		self.bot.send_message(admin_id, last_message)
 
 	def new_user(self, message_P):
 		if self.Users.get(message_P.chat.id) == []:
-			print(self.Users.insert(message_P.chat.id, self.get_name, None, 'Nother'))
+			print(self.Users.insert(message_P.chat.id, str(self.get_name(message_P)[0]), str(self.get_name(message_P)[1]), 'Nother'))
 			self.bot.send_message(admin_id, f'{str(self.get_name(message_P))} - теперь с нами')
 
 if __name__ == '__main__':

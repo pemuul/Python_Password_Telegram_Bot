@@ -6,6 +6,7 @@ from postgresql_main import Database
 from loging import Log_heandler
 
 DB_LOCATION = "db_sqlite.sqlite"
+#DB_LOCATION = 'beckup.sqlite'
 
 class Table(object):
 	# схема таблиц хранится в файле shem_table.json
@@ -67,16 +68,21 @@ class Table(object):
 		self.db.select(*args, **kwards)
 
 if __name__ == '__main__':
-	Table_password = Table('users_password')
+	#Table_password = Table('users_password')
+	Table_user = Table('users')
+	for i in Table_user.get_all():
+		print(i)
+		#print(Table_user.delete(i[0]))
 
-	Table_password.insert(1087624586, 'qwertyd', 'qwrty')
+	#Table_password.insert(1087624586, 'qwertyd', 'qwrty')
 	#print(Table_password.get('123', 'asd'))
 
-	print(Table_password.get(1087624586, 'qwertyd'))
+	#print(Table_password.get(1087624586, 'qwertyd'))
 
 	#print(Table_password.get_all())
 
-	print(Table_password.select('''SELECT * FROM users_password WHERE "User_ID" = '1087624586' and "Description" = 'qwertyd' ''', True))
+	#print(Table_password.select('''SELECT * FROM users_password WHERE "User_ID" = '1087624586' and "Description" = 'qwertyd' ''', True))
+
 
 	#print(Table_password.select('SELECT * FROM "users_password"'))
 
