@@ -127,6 +127,7 @@ def get_db(message):
 		#print([i[0] for i in table.get_all()])
 		for data in table_main.get_all():
 			#
+			data = [str(d) for d in data]
 			data_set = "', '".join(data)
 			#print(shem_json[table_name]['always_fild'])
 			line_name = '", "'.join(shem_json[table_name]['always_fild'])
