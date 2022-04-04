@@ -82,35 +82,13 @@ def get_log(message):
 @bot.message_handler(commands=['get_db'])
 def get_db(message):
 	# создаём SQLLite файл, переливаем в него все данные и отправляем 
-	'''
-	if message.chat.id == admin_id:
-		import psycopg2
-		import sys
-		import sqlite3
-
-		connection = None
-
-		#try:
-		connection = Database('db_sqlite.sqlite').connection
-		connection_backup = sqlite3.connect('beckup.sqlite')
-		connection.backup(connection_backup, pages=0, progress=None, name="main", sleep=0.250)
-		connection_backup.close()
-
-		with open('beckup.sqlite', 'r') as log_file:
-			bot.send_document(message.chat.id, log_file)
-		#except:
-		#	bot.send_message(message.chat.id, 'Не вышло:(')
-
-		os.remove('beckup.sqlite')
-	'''
 	import sqlite3
 	import json
 	from postgresql_heandler import Table
+
+	all_data = {}
+	json_file_name = 'result.json'
 	# создать новую базу SQLite
-	beckup_db_name = 'beckup.sqlite'
-	connection_backup = sqlite3.connect(beckup_db_name, check_same_thread=False)
-	
-	#print(f'{message.chat.id}: Начал сборку данных')
 	Log_heandler().save_log(f'{message.chat.id}: Начал сборку данных')
 	bot.send_message(message.chat.id, 'Сборка данный начата!')
 
@@ -118,40 +96,23 @@ def get_db(message):
 	with open("shem_table.json", "r", encoding='utf-8') as read_file:
 		shem_json = json.load(read_file)
 		print(shem_json.keys())
+
 	for table_name in shem_json:
 		print(table_name)
-		table_becup = Table(table_name, beckup_db_name, False)
 		table_main = Table(table_name)
-		db_becup = table_becup.db
-		cursor_becup = db_becup.cur
-		#print([i[0] for i in table.get_all()])
-		for data in table_main.get_all():
-			#
-			data = [str(d) for d in data]
-			data_set = "', '".join(data)
-			#print(shem_json[table_name]['always_fild'])
-			line_name = '", "'.join(shem_json[table_name]['always_fild'])
-			line_name = f'"{line_name}"'
-			#print(line_name)
-			print(f"INSERT INTO {table_name} ({line_name}) VALUES('{data_set}')")
-			cursor_becup.execute(f"INSERT INTO {table_name} ({line_name}) VALUES('{data_set}')")
-			db_becup.commit()
-
-		#print(table_becup.get_all())
-		db_becup.close()
+		all_data[table_name] = table_main.get_all()
+		print(table_main.get_all())
+		
 	# запросами выкачать все данные из базы и переместить в основную 
-	connection_backup.close()
-
-	#try:
-	with open(beckup_db_name, 'r') as becup_file:
+	with open(json_file_name, 'w') as becup_file:
+		json.dump(all_data, becup_file)
+		
+	with open(json_file_name, 'r') as becup_file:
 		bot.send_document(message.chat.id, becup_file)
-	#except:
-	#	bot.send_message(message.chat.id, 'Не вышло:(')
 
-	#print(f'{message.chat.id}: Сборка окончена')
 	Log_heandler().save_log(f'{message.chat.id}: Сборка окончена')
 
-	os.remove(beckup_db_name)
+	os.remove(json_file_name)
 
 @bot.message_handler(commands=['get_file'])
 def get_file(message):

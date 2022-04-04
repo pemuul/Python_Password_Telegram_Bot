@@ -93,8 +93,9 @@ class Database:
 		data_line = "', '".join([str(i) for i in data_line_P])
 
 		#print(f"INSERT INTO {table_name_P} ({line_name}) VALUES('{data_line}')")
-		print(f"INSERT INTO {table_name_P} ({line_name}) VALUES('{data_line}')")
-		self.cur.execute(f"INSERT INTO {table_name_P} ({line_name}) VALUES('{data_line}')")
+		ins_execute = f"INSERT INTO {table_name_P} ({line_name}) VALUES('{data_line}')"
+		print(ins_execute)
+		self.cur.execute(ins_execute)
 		self.commit()
 
 	def get_data(self, table_name_P, key_data_P, key_P):
