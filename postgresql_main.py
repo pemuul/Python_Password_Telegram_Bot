@@ -146,11 +146,9 @@ if __name__ == '__main__':
 	print(db.select('SELECT * FROM users_password'))
 
 	#db.insert_data('users_password', ["User_ID", "Description", "Password"], ['13', '14124', '1234'])
-	#print(db.find_set('users_password', ['1087624586', '123'], ["User_ID", "Description"]))
 	#db.commit()
 	#print(db.get_data('users_password'))
 	#db.get_data('users_password', ['1', '2', '3'], ['4', '5', '6'])
-	#print(db.select('''SELECT * FROM users_password WHERE "User_ID" LIKE '%1087624586%' and "Description" LIKE '%123%' '''))
 	#print([i for i, b in map(32, [134,34,3])])
 	#for i, b in map(1, ['134','34','3']):
 	#	print(i, b)
