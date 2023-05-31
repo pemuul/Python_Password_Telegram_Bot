@@ -64,10 +64,7 @@ class Table(object):
 if __name__ == '__main__':
 	Table_password = Table('users_password')
 
-	Table_password.insert(1087624586, 'qwertyd', 'qwrty')
 	#print(Table_password.get('123', 'asd'))
-
-	#print(Table_password.get(1087624586, 'qwerty'))
 
 	#print(Table_password.get_all())
 
