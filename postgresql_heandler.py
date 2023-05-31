@@ -74,15 +74,8 @@ if __name__ == '__main__':
 		print(i)
 		#print(Table_user.delete(i[0]))
 
-	#Table_password.insert(1087624586, 'qwertyd', 'qwrty')
-	#print(Table_password.get('123', 'asd'))
 
-	#print(Table_password.get(1087624586, 'qwertyd'))
-
-	#print(Table_password.get_all())
-
-	#print(Table_password.select('''SELECT * FROM users_password WHERE "User_ID" = '1087624586' and "Description" = 'qwertyd' ''', True))
-
+	#print(Table_password.get_all()
 
 	#print(Table_password.select('SELECT * FROM "users_password"'))
 
