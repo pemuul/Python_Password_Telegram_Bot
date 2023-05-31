@@ -1,2 +1,2 @@
-TOKEN = '5007120840:AAHJ4tg14q_v5TNpcbaMIIau2VIdcbRvbtk'
-ADMIN_ID = 1087624586
+TOKEN = 'лежит в ТГ'
+ADMIN_ID = 0
